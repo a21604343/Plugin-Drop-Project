@@ -1,10 +1,9 @@
-package assignmentTable
+package assignmentTable.Professor
 
 import com.tfc.ulht.Globals
 import com.tfc.ulht.assignmentComponents.ListAssignment
 import com.tfc.ulht.submissionComponents.ListSubmissions
 import com.tfc.ulht.submissionComponents.Professor.ListSubmissions_Professor
-import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Desktop
 import javax.swing.*
@@ -12,7 +11,7 @@ import javax.swing.event.HyperlinkEvent
 import javax.swing.event.HyperlinkListener
 
 
-internal class AssignmentTableButtonEditor(
+internal class AssignmentProfessorTableButtonEditor(
     txt: JTextField?,
     private val label: String,
     private val frame: JFrame
@@ -60,25 +59,21 @@ internal class AssignmentTableButtonEditor(
         return button
     }
 
-    // Apenas para testes sem DropProject
-
-    fun createTableSubsGrupo (){
-         val panel = JPanel(BorderLayout())
-         val frame = JFrame("Available Assignments")
-        val columnNames : Array<String> =  arrayOf("Id Grupo", "Nome Autores", "Último Relatório", "Última Submissão")
-    }
-
     override fun getCellEditorValue(): Any {
         if (clicked) {
-            // coluna 3 equivale á posição 4 referente ao " show submission"
             if (column == 3) {
                 if(Globals.user_type == 0){
+
                     ListSubmissions_Professor("1") // troquei assingmentId por "1" efeitos de teste
                 }else{
                     ListSubmissions(assignmentId)
                 }
 
-            } else if (column == 4) { // MORE INFO
+            } else if(column == 4){ //
+
+
+            }
+            else if (column == 5) { // MORE INFO
                 val ed1 = JEditorPane("text/html", assignmentDetails) // PREPARE HTML VIEWER
                 ed1.isEditable = false
                 val tempFrame = JFrame()
@@ -97,7 +92,7 @@ internal class AssignmentTableButtonEditor(
                 }
 
 
-            } else if (column == 5) { // SELECT ASSIGNMENT
+            } else if (column == 6) { // SELECT ASSIGNMENT
                 Globals.selectedAssignmentID = assignmentId
                 JOptionPane.showMessageDialog(null, "The assignment with ID: $assignmentId was selected")
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))

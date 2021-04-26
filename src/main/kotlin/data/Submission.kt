@@ -24,7 +24,7 @@ import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class Submission(
-    val submissionId: Long,
+    val submissionId: String,
     val submissionDate: String?,
     val report: String?,
     val summary: String?,

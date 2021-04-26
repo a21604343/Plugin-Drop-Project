@@ -16,20 +16,21 @@
  * limitations under the License.
  */
 
-package com.tfc.ulht.submissionComponents
+package com.tfc.ulht.submissionComponents.Professor
 
 import assignmentTable.SubmissionTableColumn
 import submissionTable.Professor.SubmissionProfessorTableColumn
-
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.tfc.ulht.Globals
+import com.tfc.ulht.loginComponents.Authentication
 import java.lang.reflect.Type
 import data.Submission
 import data.Submission_Professor
+import okhttp3.Request
 
-class ListSubmissions(val assignmentId: String) {
+class ListSubmissions_Professor(val assignmentId: String) {
 
     companion object {
         var selectedSubmission: String = ""
@@ -37,48 +38,46 @@ class ListSubmissions(val assignmentId: String) {
 
     var type: Type = Types.newParameterizedType(
         List::class.java,
-        Submission::class.java
+        Submission_Professor::class.java
     )
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/v1/submissionsList"
-    private var submissionList = listOf<Submission>()
+    private var submissionList_P = listOf<Submission_Professor>()
     private val moshi = Moshi.Builder().build()
-    private val submissionJsonAdapter: JsonAdapter<List<Submission>> = moshi.adapter(type)
-    val listaSubsGrupo: MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
-    val sub1 = Submission_Professor("1001","101","Diogo Casaca, Pedro Teodoro","3/10 corretos.html","clicavel","1")
+    private val submissionJsonAdapter: JsonAdapter<List<Submission_Professor>> = moshi.adapter(type)
 
-    val listaSubsAluno: MutableList<Submission> = mutableListOf<Submission>()
-    val subAluno1 = Submission("300","29-01-2020","3/10 corretos.html","","1")
+    private var listSubmissoes_P: MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
+
+    var sub1 = Submission_Professor("10", "3","Diogo,Tiago","www.report/24","www.report/24", "34")
+    var sub2 = Submission_Professor("11", "6","Diogo,Afonso","www.report/32","www.report/32", "34")
+    var sub3 = Submission_Professor("12", "6","Diogo,Afonso","www.report/33","www.report/33", "34")
+    var sub4 = Submission_Professor("13", "13","João,Diana","www.report/45","www.report/45", "34")
 
     init {
-        listaSubsGrupo.add(sub1)
-        listaSubsAluno.add(subAluno1)
-        if (Globals.user_type == 0){
-            SubmissionProfessorTableColumn(listaSubsGrupo)
-        }else{
-            SubmissionTableColumn(listaSubsAluno)
-        }
+        listSubmissoes_P.add(sub1)
+        listSubmissoes_P.add(sub2)
+        listSubmissoes_P.add(sub3)
+        listSubmissoes_P.add(sub4)
+        SubmissionProfessorTableColumn(listSubmissoes_P)
 
-
-
-        /* Comentado para testes sem DropProject
+    }
+    /*
+    init {
         val request = Request.Builder()
             .url("$REQUEST_URL/$assignmentId")
             .build()
 
         Authentication.httpClient.newCall(request).execute().use { response ->
-            submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
+            submissionList_P = submissionJsonAdapter.fromJson(response.body()!!.source())!!
         }
 
-        submissionList
+        submissionList_P
         showSubmissionList()
-        */
     }
-
-
-
+       */
     private fun showSubmissionList() {
-        SubmissionTableColumn(submissionList)
+        //SubmissionTableColumn(submissionList_P)
+        SubmissionProfessorTableColumn(listSubmissoes_P)
     }
 
 
