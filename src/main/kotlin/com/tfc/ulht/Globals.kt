@@ -19,6 +19,7 @@
 package com.tfc.ulht
 
 import com.tfc.ulht.statusBarWidget.PluginStatusWidget
+import data.Assignment_Professor
 
 class Globals {
 
@@ -30,8 +31,13 @@ class Globals {
         var choosenColumn: Int = 0
 
         var user_type = 0
+        var taLigado = false
 
         var selectedAssignmentID: String = ""
+        var submissionSelectedAsFinal = ""
+        var submissionSelectedToDownload = ""
+
+        var listAssignments : MutableList<Assignment_Professor> = ArrayList()
     }
 
 }

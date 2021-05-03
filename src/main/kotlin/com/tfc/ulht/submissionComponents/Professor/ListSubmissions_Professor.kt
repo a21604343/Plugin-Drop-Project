@@ -18,8 +18,9 @@
 
 package com.tfc.ulht.submissionComponents.Professor
 
+import assignmentTable.SubmissionProfessorTableColumn
 import assignmentTable.SubmissionTableColumn
-import submissionTable.Professor.SubmissionProfessorTableColumn
+
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -29,6 +30,7 @@ import java.lang.reflect.Type
 import data.Submission
 import data.Submission_Professor
 import okhttp3.Request
+import java.util.*
 
 class ListSubmissions_Professor(val assignmentId: String) {
 
@@ -48,17 +50,16 @@ class ListSubmissions_Professor(val assignmentId: String) {
 
     private var listSubmissoes_P: MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
 
-    var sub1 = Submission_Professor("10", "3","Diogo,Tiago","www.report/24","www.report/24", "34")
-    var sub2 = Submission_Professor("11", "6","Diogo,Afonso","www.report/32","www.report/32", "34")
-    var sub3 = Submission_Professor("12", "6","Diogo,Afonso","www.report/33","www.report/33", "34")
-    var sub4 = Submission_Professor("13", "13","João,Diana","www.report/45","www.report/45", "34")
+   // var sub1 = Submission_Professor("1001", "3","Diogo,Tiago",
+       // Date(2021,4,12,3,2,1),"validated","www.report/24","34","www.report/24", "34","www",false,"1")
+   // var sub2 = Submission_Professor("11", "6","Diogo,Afonso","www.report/32","www.report/32", "34")
+    //var sub3 = Submission_Professor("12", "6","Diogo,Afonso","www.report/33","www.report/33", "34")
+    //var sub4 = Submission_Professor("13", "13","João,Diana","www.report/45","www.report/45", "34")
 
     init {
-        listSubmissoes_P.add(sub1)
-        listSubmissoes_P.add(sub2)
-        listSubmissoes_P.add(sub3)
-        listSubmissoes_P.add(sub4)
-        SubmissionProfessorTableColumn(listSubmissoes_P)
+        //listSubmissoes_P.add(sub1)
+
+        //SubmissionProfessorTableColumn(listSubmissoes_P)
 
     }
     /*
@@ -77,7 +78,7 @@ class ListSubmissions_Professor(val assignmentId: String) {
        */
     private fun showSubmissionList() {
         //SubmissionTableColumn(submissionList_P)
-        SubmissionProfessorTableColumn(listSubmissoes_P)
+       // SubmissionProfessorTableColumn(listSubmissoes_P)
     }
 
 

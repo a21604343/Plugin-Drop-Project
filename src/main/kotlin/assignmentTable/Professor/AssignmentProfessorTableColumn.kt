@@ -21,55 +21,56 @@ package assignmentTable.Professor
 import data.Assignment_Professor
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.util.*
 import javax.swing.*
 
 class AssignmentProfessorTableColumn(assignmentList: List<Assignment_Professor>) : JFrame() {
 
     private var data = Array(assignmentList.size) { Array(8) { "" } }
-    private var headers = arrayOf("Assignment ID", "Language", "Due Date","Submissoes", "Group subs","Enunciado", "","Arquivado")
+    private var headers = arrayOf("Assignment ID", "Nome", "Last Submission","Submissoes", "Detalhes","","Arquivado")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Available Assignments")
-    private val listAlunosSubmissions: Int = 4
     private val listSubmissionsButton: Int = 3
-    private val infoButton: Int = 5
-    private val selectAssignmentButton: Int = 6
+    private val infoButton: Int = 4
+    private val selectAssignmentButton: Int = 5
+    private var subsTotal : String = "0"
+    private var subsGroups: String = "0"
+
 
     init {
         for ((iterator, assignment) in assignmentList.withIndex()) {
             data[iterator][0] = assignment.id
-            data[iterator][1] = assignment.language
+            data[iterator][1] = assignment.nome
 
-            if (!assignment.date.isNullOrEmpty()) {
-                data[iterator][2] = assignment.date.toString()
+            if (!(assignment.dateLastSubmission.toString() == Date(1,1,1,1,1,1).toString())) {
+                data[iterator][2] = assignment.dateLastSubmission.toString()
             } else {
-                data[iterator][2] = "No due date"
+                data[iterator][2] = "No Submissions Yet"
             }
 
-            data[iterator][3] = assignment.enunciado
+            data[iterator][4] = assignment.enunciado
+            data[iterator][4] = assignment.enunciado
+            subsTotal = assignment.totalSubs.toString()
+            subsGroups = assignment.totalGroups.toString()
+            data[iterator][6] = assignment.ativo
         }
 
         val table = object : JTable(data, headers) {
             override fun isCellEditable(row: Int, col: Int): Boolean {
-                return col in 3..6
+                return col in 3..5
             }
         }
-
+        table.columnModel.getColumn(6).preferredWidth = 75
         table.rowHeight = 30
         //table.removeColumn(table.columnModel.getColumn(3))
 
-        /**
-         * Show list of submissions
-         */
-        table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Submissions Made")
-        table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions Made", frame)
 
         /**
          * Show list of submissionsGroup
          */
-        table.columnModel.getColumn(listAlunosSubmissions).cellRenderer =
+        table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
             AssignmentProfessorTableButtonRenderer("SubmissionsGroup")
-        table.columnModel.getColumn(listAlunosSubmissions).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
+            table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
 
         /**
          * Open more info
