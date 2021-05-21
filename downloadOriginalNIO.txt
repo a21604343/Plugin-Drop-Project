@@ -1,0 +1,9 @@
+fun downloadSubmissao(){
+        var url = "${Globals.REQUEST_URL}/api/v1/assignmentList/sampleJavaProject${Globals.submissionSelectedToDownload}"
+        var url2 = "http://127.0.0.1:8080/downloadMavenProject/37"
+        var readChannel : ReadableByteChannel = Channels.newChannel(URL(url2).openStream())
+        print(url2)
+        var fileOS : FileOutputStream = FileOutputStream("C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name2.zip")
+        var writeChannel : FileChannel = fileOS.channel
+        writeChannel.transferFrom(readChannel,0,Long.MAX_VALUE)
+    }
