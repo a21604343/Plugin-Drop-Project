@@ -13,7 +13,7 @@ data class Assignment_Professor(
     val subs_Grupo: MutableList<Submission_Professor>?,
     var totalGroups: String?,
     var totalSubs: String?,
-    var dateLastSubmission: Date = Date(1,1,1,1,1,1),
+    var dateLastSubmission: String = "01-01-97",
     var listSubsId: HashMap<String,MutableList<Submission_Professor>> = HashMap(),
     val enunciado: String,
     var info: String, // equivalente olho no DP
@@ -24,12 +24,15 @@ data class Assignment_Professor(
         if(listSubsId.size != 0){
             this.totalGroups = listSubsId.size.toString()
             var count = 0
-            var data = Date(1,1,1,1,1,1)
+            var newestDate = ""
             for(id in listSubsId.values){
                 for(sub in id){
-                    if(sub.date > data){
+                    var dateSplit = this.dateLastSubmission.split("-")
+                    var subDateSplit = sub.date.split("-")
+                    if(subDateSplit[2] >= dateSplit[2]){
                         this.dateLastSubmission = sub.date
                     }
+
                 }
                 count += id.size
 

@@ -18,13 +18,18 @@
 
 package assignmentTable
 
+import com.tfc.ulht.Globals
+import data.Submission
 import data.Submission_Professor
 import submissionTable.Professor.SubmissionProfessorTableButtonEditor
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.Point
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.*
 
-class SubmissionProfessorTableColumn(submissionListP: MutableList<Submission_Professor>, idAssi : String) : JFrame() {
+class SubmissionProfessorTableColumn(submissionListP: List<Submission>) : JFrame() {
 
     private var data = Array(submissionListP.size) { Array(8) { "" } }
     private var headers = arrayOf("ID do Grupo", "Nome Autores", "Submissões", "Last Sub Date", "Status","Indicadores","Relatório Última Sub","Download Última Submissão")
@@ -39,14 +44,13 @@ class SubmissionProfessorTableColumn(submissionListP: MutableList<Submission_Pro
         var iterator = 0
         for (submission in submissionListP) {
            // if(submission.assignmentId == idAssi){
-                data[iterator][0] = submission.GroupId.toString()
-                idGroupSubmissionOpen = submission.GroupId.toString()
-                data[iterator][1] = submission.authorsName.toString()
-                data[iterator][3] = submission.dateLastSubGroupsExemplo.toString()
-                data[iterator][4] = submission.status.toString()
-                data[iterator][5] = submission.indicares.toString()
+                data[iterator][0] = submission.groupId.toString()
+                data[iterator][1] = submission.groupAuthors.toString()
+                data[iterator][3] = submission.submissionDate.toString()
+                data[iterator][4] = submission.status
+                data[iterator][5] = submission.coverage.toString()
                 data[iterator][6] = submission.report.toString()
-                data[iterator][7] = submission.downloadLast.toString()
+                //data[iterator][7] = submission.downloadLast.toString()
           //  }
 
 
@@ -54,6 +58,29 @@ class SubmissionProfessorTableColumn(submissionListP: MutableList<Submission_Pro
         }
 
         val table = JTable(data, headers)
+
+        fun checkColumnClicked(column : Int){
+            when(column){
+                0 -> {
+                    frame.isVisible = false
+                    Globals.listAssignments.reverse()
+                    // AssignmentProfessorTableColumn(Globals.listAssignments)
+                }
+                2 -> print("tamos ai")
+                else -> "Erro"
+            }
+        }
+
+        frame.getContentPane().add(table.getTableHeader())
+        table.getTableHeader().addMouseListener(object : MouseAdapter(){
+
+            override fun mouseClicked (event : MouseEvent){
+                var point : Point = event.getPoint()
+                var column : Int = table.columnAtPoint(point)
+                print(column)
+                checkColumnClicked(column)
+            }
+        })
         table.rowHeight = 50
         table.columnModel.getColumn(0).preferredWidth = 75
         table.columnModel.getColumn(1).preferredWidth = 185
@@ -72,18 +99,18 @@ class SubmissionProfessorTableColumn(submissionListP: MutableList<Submission_Pro
         table.columnModel.getColumn(selectSubmission).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Show Submission", frame)
 
         /**
-        * Show list of submissions
+        * Show sub report
         */
         table.columnModel.getColumn(lastReport).cellRenderer =
             AssignmentTableButtonRenderer("Show Submission Report")
         table.columnModel.getColumn(lastReport).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Submission Report", frame)
 
         /**
-        * Show list of submissions
+        * Download Last
         */
         table.columnModel.getColumn(downloadLast).cellRenderer =
             AssignmentTableButtonRenderer("Show Submission Download")
-        table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Show Submission Download", frame)
+        table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Download last SubmissionA", frame)
 
 
         val scrollPane = JScrollPane(table)

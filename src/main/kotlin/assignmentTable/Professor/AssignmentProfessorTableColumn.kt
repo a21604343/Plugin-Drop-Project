@@ -18,13 +18,18 @@
 
 package assignmentTable.Professor
 
+import com.tfc.ulht.Globals
+import data.Assignment
 import data.Assignment_Professor
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.Point
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.util.*
 import javax.swing.*
 
-class AssignmentProfessorTableColumn(assignmentList: List<Assignment_Professor>) : JFrame() {
+class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame() {
 
     private var data = Array(assignmentList.size) { Array(8) { "" } }
     private var headers = arrayOf("Assignment ID", "Nome", "Last Submission","Submissoes", "Detalhes","","Arquivado")
@@ -40,19 +45,18 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment_Professor>)
     init {
         for ((iterator, assignment) in assignmentList.withIndex()) {
             data[iterator][0] = assignment.id
-            data[iterator][1] = assignment.nome
+            data[iterator][1] = assignment.name
 
-            if (!(assignment.dateLastSubmission.toString() == Date(1,1,1,1,1,1).toString())) {
-                data[iterator][2] = assignment.dateLastSubmission.toString()
+            if (!assignment.date.isNullOrEmpty()) {
+                data[iterator][2] = assignment.lastSubmissionDate.toString()
             } else {
                 data[iterator][2] = "No Submissions Yet"
             }
 
-            data[iterator][4] = assignment.enunciado
-            data[iterator][4] = assignment.enunciado
-            subsTotal = assignment.totalSubs.toString()
-            subsGroups = assignment.totalGroups.toString()
-            data[iterator][6] = assignment.ativo
+            data[iterator][4] = assignment.html
+            subsTotal = assignment.numSubmissions.toString()
+            //subsGroups = assignment.totalGroups.toString()
+            data[iterator][6] = assignment.active.toString()
         }
 
         val table = object : JTable(data, headers) {
@@ -60,6 +64,28 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment_Professor>)
                 return col in 3..5
             }
         }
+        fun checkColumnClicked(column : Int){
+            when(column){
+                0 -> {
+                    frame.isVisible = false
+                    Globals.listAssignments.reverse()
+                   // AssignmentProfessorTableColumn(Globals.listAssignments)
+                }
+                2 -> print("tamos ai")
+                else -> "Erro"
+            }
+        }
+
+        frame.getContentPane().add(table.getTableHeader())
+        table.getTableHeader().addMouseListener(object : MouseAdapter(){
+
+            override fun mouseClicked (event : MouseEvent){
+                var point : Point = event.getPoint()
+                var column : Int = table.columnAtPoint(point)
+                print(column)
+                checkColumnClicked(column)
+            }
+        })
         table.columnModel.getColumn(6).preferredWidth = 75
         table.rowHeight = 30
         //table.removeColumn(table.columnModel.getColumn(3))

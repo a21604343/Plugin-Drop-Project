@@ -24,7 +24,7 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.*
 
-class SubmissionHistoryTableColumn(submissionListP: MutableList<Submission_Professor>?) : JFrame() {
+class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame() {
 
     private var data = Array(submissionListP!!.size) { Array(9) { "" } }
     private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","Indicadores","Tempo","Relatório","Mark as Final","Download Submissão")
@@ -40,15 +40,15 @@ class SubmissionHistoryTableColumn(submissionListP: MutableList<Submission_Profe
         var iterator = 0
         if (submissionListP != null) {
             for (submission in submissionListP) {
-                data[iterator][0] = submission.submissionId
-                data[iterator][1] = submission.date.toString()
+                data[iterator][0] = submission.submissionId.toString()
+                data[iterator][1] = submission.submissionDate.toString()
                 data[iterator][2] = submission.status.toString()
-                data[iterator][3] = submission.isFinal.toString()
-                data[iterator][4] = submission.indicares.toString()
-                data[iterator][5] = submission.tempo.toString()
+                data[iterator][3] = submission.markedAsFinal.toString()
+                data[iterator][4] = submission.summary .toString()
+                data[iterator][5] = submission.elapsed.toString()
                 data[iterator][6] = submission.report.toString()
-                data[iterator][7] = submission.isFinal.toString()
-                data[iterator][8] = submission.downloadLast.toString()
+                //data[iterator][7] = submission.isFinal.toString()
+               // data[iterator][8] = submission.downloadLast.toString()
 
                 iterator++
             }

@@ -10,7 +10,7 @@ data class Submission_Professor (
     val submissionId: String,
     val GroupId: String,
     val authorsName: String?,
-    var date: Date,
+    var date: String,
     var status: String,
     var report: String?,
     var tempo: String?,

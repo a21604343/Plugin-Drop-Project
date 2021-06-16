@@ -38,7 +38,7 @@ class AssignmentTableColumn(assignmentList: List<Assignment>) : JFrame() {
     init {
         for ((iterator, assignment) in assignmentList.withIndex()) {
             data[iterator][0] = assignment.id
-            data[iterator][1] = assignment.language
+            data[iterator][1] = assignment.language.toString()
 
             if (!assignment.date.isNullOrEmpty()) {
                 data[iterator][2] = assignment.date.toString()

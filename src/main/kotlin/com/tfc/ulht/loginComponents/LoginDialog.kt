@@ -135,7 +135,7 @@ class LoginDialog {
 
             UIManager.put("OptionPane.minimumSize", Dimension(200, 100))
 
-
+            println("*** " + response)
             if (response && !checkIfCorrectNumber()) {
                 JOptionPane.showMessageDialog(null, "Login Successful")
             } else if (!response) {
@@ -183,7 +183,7 @@ class LoginDialog {
     }
 
     private fun checkIfCorrectNumber(): Boolean {
-
+        return false
         var index = 0
         for (number in studentNumberField) {
             val addOrNot = number.text.trim().contains('a') && number.text.length == 9

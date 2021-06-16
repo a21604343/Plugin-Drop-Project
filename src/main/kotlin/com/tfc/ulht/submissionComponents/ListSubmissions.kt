@@ -57,17 +57,17 @@ class ListSubmissions(val assignmentId: String) {
     val listaSubsGroup: MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
     var indicadoresTeste = Indicadores(true,true,true,"1/5","4/9","3/12","123ms","16%")
     var sub1 = Submission_Professor("1001", "3","Diogo,Tiago",
-        Date(2021,4,12,3,2,1),"validated","www.report/24","34",indicadoresTeste, "17/03/21","www",false,"1")
+        "","validated","www.report/24","34",indicadoresTeste, "17/03/21","www",false,"1")
     //val subAluno1 = Submission("300","29-01-2020","3/10 corretos.html","","1")
     var sub2 = Submission_Professor("1002", "4","Bernardo Tavares,Tiago Abreu",
-        Date(2021,4,12,3,2,1),"validated","www.report/24","34",indicadoresTeste, "17/03/21","www",false,"1")
+        "","validated","www.report/24","34",indicadoresTeste, "17/03/21","www",false,"1")
     var sub3 = Submission_Professor("1003", "4","Bernardo Tavares,Tiago Abreu",
-        Date(2021,4,12,3,2,1),"validated","www.report/24","34",indicadoresTeste, "17/03/21","www",false,"2")
+        "","validated","www.report/24","34",indicadoresTeste, "17/03/21","www",false,"2")
 
 
-    fun createReport(submissao : Submission_Professor) : String{
-        var authors = submissao.authorsName?.split(",")
-
+    fun createReport(submissao : Submission) : String{
+        var authors = submissao.groupAuthors?.split(",")
+        println("report-- ${submissao.groupAuthors}")
         var report = "<html>" +
         "<head>" +
        " <title>Drop Project - Build report</title>" +
@@ -78,7 +78,7 @@ class ListSubmissions(val assignmentId: String) {
         "}"+
          "</style"+
         "<H1 class=\"page-header\"> Build report for submission </H1>" +
-        "<h3> Assignment:  ${submissao.assignmentId}  | Last commit: ${submissao.date} </h3>" +
+        "<h3> Assignment:  ${submissao.assignmentId}  | Last commit: ${submissao.submissionDate} </h3>" +
         "</head>" +
         "<body>" +
         "<div>"+
@@ -142,7 +142,7 @@ class ListSubmissions(val assignmentId: String) {
         "</td>"+
         "<td>"+
         "<h4 style=\"margin-top: 3px\">"+
-        "<span class=\"label label-success\">${submissao.indicares.studentTest}</span>"+
+        "<span class=\"label label-success\">${submissao.studentTests}</span>"+
         "</h4>"+
         "</td>"+
         "</tr>"+
@@ -153,7 +153,7 @@ class ListSubmissions(val assignmentId: String) {
                 "</td>"+
                 "<td>"+
                 "<h4 style=\"margin-top: 3px\">"+
-                "<span class=\"label label-success\">${submissao.indicares.teacherTest}</span>"+
+                "<span class=\"label label-success\">${submissao.teacherTests}</span>"+
                 "</h4>"+
                 "</td>"+
                 "</tr>"+
@@ -164,7 +164,7 @@ class ListSubmissions(val assignmentId: String) {
                 "</td>"+
                 "<td>"+
                 "<h4 style=\"margin-top: 3px\">"+
-                "<span class=\"label label-success\">${submissao.indicares.privateTest}</span>"+
+                "<span class=\"label label-success\">${submissao.hiddenTests}</span>"+
                 "</h4>"+
                 "</td>"+
                 "</tr>"+
@@ -190,10 +190,10 @@ class ListSubmissions(val assignmentId: String) {
         "</thead>"+
         "<tbody>"+
         "<tr>"+
-        "<td>Coverage ${submissao.indicares.coverage} (only visible to teacher</td>"+
+        "<td>Coverage ${submissao.coverage} (only visible to teacher</td>"+
         "</tr>"+
         "<tr>"+
-        "<td>Tests run: 2, Failures: 0, Errors: 0, Time elapsed: ${submissao.indicares.execTime} sec</td>"+
+        "<td>Tests run: 2, Failures: 0, Errors: 0, Time elapsed: ${submissao.elapsed} sec</td>"+
         "</tr>"+
 
      "   </tbody>"+
@@ -208,7 +208,7 @@ class ListSubmissions(val assignmentId: String) {
 
     }
 
-    fun updateAllReports(listaSubs : MutableList<Submission_Professor>){
+    fun updateAllReports(listaSubs : List<Submission>){
         for(sub in listaSubs){
             sub.report = createReport(sub)
         }
@@ -224,7 +224,7 @@ class ListSubmissions(val assignmentId: String) {
         return listaFinal
 
     }
-
+/*
     fun addSubsToListGlobal (listaSubsOriginal : MutableList<Submission_Professor>){
         for (subOriginal in listaSubsOriginal){
             for(assiGlobal in Globals.listAssignments){
@@ -260,31 +260,36 @@ class ListSubmissions(val assignmentId: String) {
 
     }
 
+ */
+
     init {
         if (!Globals.taLigado) {
             listaSubsGroup.add(sub1)
             listaSubsGroup.add(sub2)
-            updateAllReports(listaSubsGroup)
+
             //sub1.report = createReport(sub1)
 
-            //listaSubsAluno.add(subAluno1)
-            if (Globals.user_type == 0) {
-                addSubsToListGlobal(listaSubsGroup)
 
-                SubmissionProfessorTableColumn(checkID(listaSubsGroup),assignmentId)
+            if (Globals.user_type == 0) {
+                //addSubsToListGlobal(listaSubsGroup)
+
+               // SubmissionProfessorTableColumn(checkID(listaSubsGroup),assignmentId)
             } else {
                 SubmissionTableColumn(listaSubsAluno)
             }
         } else {
+            println("***** ListSUB" + REQUEST_URL)
         val request = Request.Builder()
             .url("$REQUEST_URL/$assignmentId")
             .build()
 
         Authentication.httpClient.newCall(request).execute().use { response ->
             submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
-        }
+            Globals.listaTempSub = submissionList
 
-        submissionList
+        }
+            updateAllReports(submissionList)
+            submissionList
         showSubmissionList()
 
         }
@@ -293,7 +298,13 @@ class ListSubmissions(val assignmentId: String) {
 
 
     private fun showSubmissionList() {
-        SubmissionTableColumn(submissionList)
+
+        if(Globals.user_type == 0){
+            SubmissionProfessorTableColumn(submissionList)
+        }else{
+            SubmissionTableColumn(submissionList)
+        }
+
     }
 
 

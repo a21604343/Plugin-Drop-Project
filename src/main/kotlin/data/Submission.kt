@@ -18,15 +18,28 @@
 
 package data
 
+import com.intellij.ide.ProjectGroup
 import com.squareup.moshi.JsonClass
+import java.math.BigDecimal
 import java.util.*
 
 
 @JsonClass(generateAdapter = true)
 data class Submission(
-    val submissionId: String,
+    val submissionId: Long,
+    var groupId: Long?,
+    var groupAuthors: String,
+    val submitterUserId : String,
     val submissionDate: String?,
-    val report: String?,
+    var report: String?,
     val summary: String?,
+    val status : String,
+    val structureErrors: String?,
+    val teacherTests: String?,
+    val hiddenTests: String?,
+    val studentTests: String?,
+    val elapsed: String?,
+    val coverage: Int?,
+    val markedAsFinal: Boolean,
     val assignmentId: String
 )

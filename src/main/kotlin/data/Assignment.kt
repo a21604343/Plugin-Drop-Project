@@ -18,12 +18,18 @@
 
 package data
 
+import com.intellij.lang.Language
 import com.squareup.moshi.JsonClass
+import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class Assignment(
     val id: String,
+    val name: String,
     val language: String,
     val date: String?,
-    val html: String
+    val numSubmissions: Int,
+    val html: String,
+    val lastSubmissionDate: String?,
+    val active: Boolean
 )

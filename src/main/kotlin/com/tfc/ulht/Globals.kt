@@ -18,26 +18,32 @@
 
 package com.tfc.ulht
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.tfc.ulht.statusBarWidget.PluginStatusWidget
+import data.Assignment
 import data.Assignment_Professor
+import data.Submission
 
 class Globals {
 
     companion object {
-        val REQUEST_URL = "http://127.0.0.1:8080"   //"https://drop-project-fork.herokuapp.com"
+        val REQUEST_URL = "http://127.0.0.1:8080"  //"https://drop-project-fork.herokuapp.com"
         val PLUGIN_ID = PluginStatusWidget::class.java.name
 
         var choosenRow: Int = 0
         var choosenColumn: Int = 0
 
         var user_type = 0
-        var taLigado = false
-
+        var taLigado = true
         var selectedAssignmentID: String = ""
         var submissionSelectedAsFinal = ""
         var submissionSelectedToDownload = ""
 
-        var listAssignments : MutableList<Assignment_Professor> = ArrayList()
+
+        var listAssignments : MutableList<Assignment> = ArrayList()
+        var listAssignmentsDP : List<Assignment> = ArrayList()
+        var listaTempSub : List<Submission> = ArrayList()
     }
 
 }
