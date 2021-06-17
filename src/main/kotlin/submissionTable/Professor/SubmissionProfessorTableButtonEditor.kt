@@ -1,6 +1,8 @@
 package submissionTable.Professor
 
 import assignmentTable.SubmissionTableColumn
+import com.intellij.ide.impl.ProjectUtil
+import com.tfc.ulht.FastOpener
 import com.tfc.ulht.Globals
 import com.tfc.ulht.assignmentComponents.ListAssignment
 import com.tfc.ulht.submissionComponents.ListSubmissions
@@ -28,7 +30,8 @@ import javax.swing.event.HyperlinkListener
 internal class SubmissionProfessorTableButtonEditor(
     txt: JTextField?,
     private val label: String,
-    private val frame: JFrame
+    private val frame: JFrame,
+    private var assignmentID : String
 ) : DefaultCellEditor(txt) {
     private var button: JButton = JButton(label)
     private var clicked: Boolean = false
@@ -70,9 +73,9 @@ internal class SubmissionProfessorTableButtonEditor(
             if (column == 2) {
                 if(Globals.user_type == 0){
 
-                    //ListSubmissionsHistory("sampleJavaProject",44)
+                    ListSubmissionsHistory("sampleJavaProject",5)
                     // SubmissionHistoryTableColumn(findListById(idGroup))
-                    SubmissionTableColumn(Globals.listaTempSub)
+                    //  SubmissionTableColumn(Globals.listaTempSub)
                     //ListSubmissions("sampleJavaProject")
                     //ListSubmissions_Professor(assignmentId) // troquei assingmentId por "1" efeitos de teste
                 }else{
@@ -93,6 +96,12 @@ internal class SubmissionProfessorTableButtonEditor(
                 // for(assiGlobal in Globals.listAssignments){
                 //   for(assiIDGroup in assiGlobal.listSubsId.values){
                 downloadSubmissao()
+
+                var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
+                if(f != null){
+                    ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
+                }
+
                 //   }
                   //  if(id.id)
 
@@ -109,7 +118,7 @@ internal class SubmissionProfessorTableButtonEditor(
         return label
     }
 /*
-    fun findListById(idGroup: String): MutableList<Submission_Professor>? {
+    fun findListById(assignmentID: String, idGroup: String): MutableList<Submission_Professor>? {
         for(assiGlobal in Globals.listAssignments){
             for(subs in assiGlobal.listSubsId.keys){
                 if(subs == idGroup){
@@ -120,6 +129,8 @@ internal class SubmissionProfessorTableButtonEditor(
     }
 
  */
+
+
 
     fun downloadSubmissao() {
         try {

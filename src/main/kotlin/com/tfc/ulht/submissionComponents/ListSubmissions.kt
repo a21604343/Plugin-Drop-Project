@@ -142,170 +142,170 @@ class ListSubmissions(val assignmentId: String) {
         "</td>"+
         "<td>"+
         "<h4 style=\"margin-top: 3px\">"+
-        "<span class=\"label label-success\">${submissao.studentTests}</span>"+
-        "</h4>"+
-        "</td>"+
-        "</tr>"+
-                "<tr>"+
-                "<td>"+
-                "<span>Teacher Unit Tests</span>"+
-                "<br>"+
-                "</td>"+
-                "<td>"+
-                "<h4 style=\"margin-top: 3px\">"+
-                "<span class=\"label label-success\">${submissao.teacherTests}</span>"+
-                "</h4>"+
-                "</td>"+
-                "</tr>"+
-                "<tr>"+
-                "<td>"+
-                "<span>Teacher Hidden Unit Tests</span>"+
-                "<br>"+
-                "</td>"+
-                "<td>"+
-                "<h4 style=\"margin-top: 3px\">"+
-                "<span class=\"label label-success\">${submissao.hiddenTests}</span>"+
-                "</h4>"+
-                "</td>"+
-                "</tr>"+
-        "</tbody>"+
-        "</table>"+
-        "<br>"+
-       " <!--<table class=\"table table-bordered\" -->"+
-        "<!--<thead>-->"+
-        "<!--<tr>-->"+
-        "<!--</tr>-->"+
+//"<span class=\"label label-success\">${submissao.studentTests}</span>"+
+ "</h4>"+
+ "</td>"+
+ "</tr>"+
+         "<tr>"+
+         "<td>"+
+         "<span>Teacher Unit Tests</span>"+
+         "<br>"+
+         "</td>"+
+         "<td>"+
+         "<h4 style=\"margin-top: 3px\">"+
+                //     "<span class=\"label label-success\">${submissao.teacherTests}</span>"+
+         "</h4>"+
+         "</td>"+
+         "</tr>"+
+         "<tr>"+
+         "<td>"+
+         "<span>Teacher Hidden Unit Tests</span>"+
+         "<br>"+
+         "</td>"+
+         "<td>"+
+         "<h4 style=\"margin-top: 3px\">"+
+                // "<span class=\"label label-success\">${submissao.hiddenTests}</span>"+
+         "</h4>"+
+         "</td>"+
+         "</tr>"+
+ "</tbody>"+
+ "</table>"+
+ "<br>"+
+" <!--<table class=\"table table-bordered\" -->"+
+ "<!--<thead>-->"+
+ "<!--<tr>-->"+
+ "<!--</tr>-->"+
 
-        "<!--</thead>-->"+
-        "<!--<tbody>-->"+
-        "<!--</tr>-->"+
-       " <!--</tbody>-->"+
-        "<!--</table>-->"+
-        "<br>"+
-        "<table class=\"table table-bordered\">"+
-        "<thead>"+
-        "<tr>"+
-        "<th>JUnit Summary (Teacher Tests)</th>"+
-        "</tr>"+
-        "</thead>"+
-        "<tbody>"+
-        "<tr>"+
-        "<td>Coverage ${submissao.coverage} (only visible to teacher</td>"+
-        "</tr>"+
-        "<tr>"+
-        "<td>Tests run: 2, Failures: 0, Errors: 0, Time elapsed: ${submissao.elapsed} sec</td>"+
-        "</tr>"+
+ "<!--</thead>-->"+
+ "<!--<tbody>-->"+
+ "<!--</tr>-->"+
+" <!--</tbody>-->"+
+ "<!--</table>-->"+
+ "<br>"+
+ "<table class=\"table table-bordered\">"+
+ "<thead>"+
+ "<tr>"+
+ "<th>JUnit Summary (Teacher Tests)</th>"+
+ "</tr>"+
+ "</thead>"+
+ "<tbody>"+
+ "<tr>"+
+ "<td>Coverage ${submissao.coverage} (only visible to teacher</td>"+
+ "</tr>"+
+ "<tr>"+
+ "<td>Tests run: 2, Failures: 0, Errors: 0, Time elapsed: ${submissao.elapsed} sec</td>"+
+ "</tr>"+
 
-     "   </tbody>"+
-       " </table>"+
-        "<br>"+
+"   </tbody>"+
+" </table>"+
+ "<br>"+
 
-       " </div>"+
-       " </body>"+
-      "  </html>"
+" </div>"+
+" </body>"+
+"  </html>"
 
-        return report
+ return report
 
-    }
+}
 
-    fun updateAllReports(listaSubs : List<Submission>){
-        for(sub in listaSubs){
-            sub.report = createReport(sub)
-        }
-    }
+fun updateAllReports(listaSubs : List<Submission>){
+ for(sub in listaSubs){
+     sub.report = createReport(sub)
+ }
+}
 
-    fun checkID(listaSubs : MutableList<Submission_Professor>) : MutableList<Submission_Professor>{
-        var listaFinal : MutableList<Submission_Professor> = mutableListOf()
-        for(sub in listaSubs){
-            if (sub.assignmentId == assignmentId){
-                listaFinal.add(sub)
-            }
-        }
-        return listaFinal
+fun checkID(listaSubs : MutableList<Submission_Professor>) : MutableList<Submission_Professor>{
+ var listaFinal : MutableList<Submission_Professor> = mutableListOf()
+ for(sub in listaSubs){
+     if (sub.assignmentId == assignmentId){
+         listaFinal.add(sub)
+     }
+ }
+ return listaFinal
 
-    }
+}
 /*
-    fun addSubsToListGlobal (listaSubsOriginal : MutableList<Submission_Professor>){
-        for (subOriginal in listaSubsOriginal){
-            for(assiGlobal in Globals.listAssignments){
-                if(subOriginal.assignmentId == assiGlobal.id){
-                    for (subs in assiGlobal.listSubsId.keys){
-                        if (subs == subOriginal.GroupId){
-                            var existe = false
-                            for (sub in assiGlobal.listSubsId.get(subOriginal.GroupId)!!){
-                                if (sub.submissionId == subOriginal.submissionId){
-                                  existe = true
-                                }
-                            }
-                            if (!existe){
+fun addSubsToListGlobal (listaSubsOriginal : MutableList<Submission_Professor>){
+ for (subOriginal in listaSubsOriginal){
+     for(assiGlobal in Globals.listAssignments){
+         if(subOriginal.assignmentId == assiGlobal.id){
+             for (subs in assiGlobal.listSubsId.keys){
+                 if (subs == subOriginal.GroupId){
+                     var existe = false
+                     for (sub in assiGlobal.listSubsId.get(subOriginal.GroupId)!!){
+                         if (sub.submissionId == subOriginal.submissionId){
+                           existe = true
+                         }
+                     }
+                     if (!existe){
 
-                                assiGlobal.listSubsId.get(subOriginal.GroupId)?.add(subOriginal)
-                                existe = false
-                            }
-                        }else{ // não existe key com aquele IDgroup
-                            var listTemp : MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
-                            listTemp.add(subOriginal)
+                         assiGlobal.listSubsId.get(subOriginal.GroupId)?.add(subOriginal)
+                         existe = false
+                     }
+                 }else{ // não existe key com aquele IDgroup
+                     var listTemp : MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
+                     listTemp.add(subOriginal)
 
-                            assiGlobal.listSubsId.put(subOriginal.GroupId,listTemp)
-                        }
-                    }
+                     assiGlobal.listSubsId.put(subOriginal.GroupId,listTemp)
+                 }
+             }
 
-                    var listTemp : MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
-                    listTemp.add(subOriginal)
-                    assiGlobal.listSubsId.put(subOriginal.GroupId,listTemp)
+             var listTemp : MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
+             listTemp.add(subOriginal)
+             assiGlobal.listSubsId.put(subOriginal.GroupId,listTemp)
 
-                }
-            }
-        }
+         }
+     }
+ }
 
-    }
+}
 
- */
+*/
 
-    init {
-        if (!Globals.taLigado) {
-            listaSubsGroup.add(sub1)
-            listaSubsGroup.add(sub2)
+init {
+ if (!Globals.taLigado) {
+     listaSubsGroup.add(sub1)
+     listaSubsGroup.add(sub2)
 
-            //sub1.report = createReport(sub1)
-
-
-            if (Globals.user_type == 0) {
-                //addSubsToListGlobal(listaSubsGroup)
-
-               // SubmissionProfessorTableColumn(checkID(listaSubsGroup),assignmentId)
-            } else {
-                SubmissionTableColumn(listaSubsAluno)
-            }
-        } else {
-            println("***** ListSUB" + REQUEST_URL)
-        val request = Request.Builder()
-            .url("$REQUEST_URL/$assignmentId")
-            .build()
-
-        Authentication.httpClient.newCall(request).execute().use { response ->
-            submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
-            Globals.listaTempSub = submissionList
-
-        }
-            updateAllReports(submissionList)
-            submissionList
-        showSubmissionList()
-
-        }
-    }
+     //sub1.report = createReport(sub1)
 
 
+     if (Globals.user_type == 0) {
+         //addSubsToListGlobal(listaSubsGroup)
 
-    private fun showSubmissionList() {
+        // SubmissionProfessorTableColumn(checkID(listaSubsGroup),assignmentId)
+     } else {
+         SubmissionTableColumn(listaSubsAluno)
+     }
+ } else {
+     println("***** ListSUB" + REQUEST_URL)
+ val request = Request.Builder()
+     .url("$REQUEST_URL/$assignmentId")
+     .build()
 
-        if(Globals.user_type == 0){
-            SubmissionProfessorTableColumn(submissionList)
-        }else{
-            SubmissionTableColumn(submissionList)
-        }
+ Authentication.httpClient.newCall(request).execute().use { response ->
+     submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
+     Globals.listaTempSub = submissionList
 
-    }
+ }
+     updateAllReports(submissionList)
+     submissionList
+ showSubmissionList()
+
+ }
+}
+
+
+
+private fun showSubmissionList() {
+
+ if(Globals.user_type == 0){
+     SubmissionProfessorTableColumn(submissionList,assignmentId)
+ }else{
+     SubmissionTableColumn(submissionList)
+ }
+
+}
 
 
 }

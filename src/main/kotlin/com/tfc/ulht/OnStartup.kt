@@ -34,6 +34,8 @@ class OnStartup : StartupActivity {
 
         val userPassFile = File("${project.basePath}\\up.txt")
 
+        
+
         if (userPassFile.exists()) {
             val bufferedReader = userPassFile.bufferedReader()
             val text = bufferedReader.readLine()

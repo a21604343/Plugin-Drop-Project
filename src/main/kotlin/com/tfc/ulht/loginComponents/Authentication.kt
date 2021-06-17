@@ -55,7 +55,9 @@ class Authentication {
 
         httpClient.newCall(request).execute().use { response ->
             serverResponse = response.isSuccessful
+            println("**** " + response)
         }
+
 
         /*httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

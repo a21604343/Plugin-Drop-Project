@@ -29,7 +29,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class SubmissionProfessorTableColumn(submissionListP: List<Submission>) : JFrame() {
+class SubmissionProfessorTableColumn(submissionListP: List<Submission>, assignmentID : String) : JFrame() {
 
     private var data = Array(submissionListP.size) { Array(8) { "" } }
     private var headers = arrayOf("ID do Grupo", "Nome Autores", "Submissões", "Last Sub Date", "Status","Indicadores","Relatório Última Sub","Download Última Submissão")
@@ -96,21 +96,21 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission>) : JFrame
          */
         table.columnModel.getColumn(selectSubmission).cellRenderer =
             AssignmentTableButtonRenderer("Show Submission ")
-        table.columnModel.getColumn(selectSubmission).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Show Submission", frame)
+        table.columnModel.getColumn(selectSubmission).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Show Submission", frame,assignmentID)
 
         /**
         * Show sub report
         */
         table.columnModel.getColumn(lastReport).cellRenderer =
             AssignmentTableButtonRenderer("Show Submission Report")
-        table.columnModel.getColumn(lastReport).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Submission Report", frame)
+        table.columnModel.getColumn(lastReport).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Submission Report", frame,assignmentID)
 
         /**
         * Download Last
         */
         table.columnModel.getColumn(downloadLast).cellRenderer =
             AssignmentTableButtonRenderer("Show Submission Download")
-        table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Download last SubmissionA", frame)
+        table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Download last SubmissionA", frame,assignmentID)
 
 
         val scrollPane = JScrollPane(table)

@@ -20,6 +20,7 @@ package data
 
 import com.intellij.ide.ProjectGroup
 import com.squareup.moshi.JsonClass
+import data.JUnitSummary
 import java.math.BigDecimal
 import java.util.*
 
@@ -35,11 +36,14 @@ data class Submission(
     val summary: String?,
     val status : String,
     val structureErrors: String?,
+    /*
     val teacherTests: String?,
     val hiddenTests: String?,
     val studentTests: String?,
+
+     */
     val elapsed: String?,
-    val coverage: Int?,
+    var coverage: Int?,
     val markedAsFinal: Boolean,
     val assignmentId: String
 )

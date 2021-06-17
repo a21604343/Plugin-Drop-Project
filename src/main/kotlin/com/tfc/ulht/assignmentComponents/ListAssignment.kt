@@ -19,6 +19,7 @@ import kotlin.collections.HashMap
 import okhttp3.Request
 import javax.swing.JOptionPane
 import com.tfc.ulht.loginComponents.Authentication
+import data.Submission
 
 
 class ListAssignment : AnAction() {
@@ -70,6 +71,15 @@ class ListAssignment : AnAction() {
             }
         }
     }
+
+     fun addAssiHash(listaAssi : List<Assignment>){
+         for(assi in listaAssi){
+             if(!(Globals.hashAssiSub.containsKey(assi))){
+                    var listaSubs : List<Submission> = emptyList()
+                    Globals.hashAssiSub.put(assi,listaSubs)
+             }
+         }
+     }
 
     override fun actionPerformed(e: AnActionEvent) {
         if (!Globals.taLigado) {

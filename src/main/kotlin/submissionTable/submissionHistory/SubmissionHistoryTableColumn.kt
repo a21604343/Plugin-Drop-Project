@@ -47,6 +47,9 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
                 data[iterator][4] = submission.summary .toString()
                 data[iterator][5] = submission.elapsed.toString()
                 data[iterator][6] = submission.report.toString()
+                if (submission.coverage == null){
+                    submission.coverage = 0
+                }
                 //data[iterator][7] = submission.isFinal.toString()
                // data[iterator][8] = submission.downloadLast.toString()
 
