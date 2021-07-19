@@ -66,7 +66,21 @@ class ListSubmissions(val assignmentId: String) {
 
 
     fun createReport(submissao : Submission) : String{
-        var authors = submissao.groupAuthors?.split(",")
+        var authors = submissao.groupAuthors?.split("name=")
+        var isGroup = false
+        var auth1 : String
+        var auth2 : String
+        if(authors.size > 2){
+            isGroup = true
+            val auths = authors.get(1).split(",")
+            val auths2 = authors.get(2).split(",")
+             auth1 = auths.get(0)
+             auth2 = auths2.get(0)
+        }else{
+            val auths = authors.get(1).split(",")
+            auth1 = auths.get(0)
+            auth2 = ""
+        }
         println("report-- ${submissao.groupAuthors}")
         var report = "<html>" +
         "<head>" +
@@ -83,24 +97,36 @@ class ListSubmissions(val assignmentId: String) {
         "<body>" +
         "<div>"+
         "<h2>Group elements</h2>"+
-        "<table >"+
-        "<tbody>"+
-        "<tr>"+
-        "<td>"+
-                "<span>${authors?.get(0)}</span>"+
-        "<span class=\"label label-primary\"> <b>Submitter</b></span>"+
-       " </td>"+
-        "<td>Student 1</td>"+
-        "</tr>"+
-        "<tr>"+
-        "<td>"+
-        "<span>${authors?.get(1)}</span>"+
-        "</td"+
-        "<td> Student 2 </td>"+
-        "<tr>"+
-        "</tbody>"+
-        "</table>"+
-        "<h2>Results summary</h2>"+
+        "<table >"
+
+
+        if (isGroup){
+            report += "<span>${auth1}</span>"+
+
+                    "<span class=\"label label-primary\"> <b>Submitter</b></span>"+
+                    " </td>"+
+                    "<td>Student 1</td>"+
+                    "</tr>"+
+                    "<tr>"+
+                    "<td>"+
+                    "<span>${auth2}</span>"+
+                    "</td"+
+                    "<td> Student 2 </td>"+
+                    "<tr>"+
+                    "</tbody>"+
+                    "</table>"
+        }else{
+            report += "<span>${auth1}</span>"+
+
+                    "<span class=\"label label-primary\"> <b>Submitter</b></span>"+
+                    " </td>"+
+                    "<td>Student 1</td>"+
+                    "</tr>"+
+                    "<tr>"+
+                    "<td>"
+        }
+
+        report += "<h2>Results summary</h2>"+
         "<table>"+
         "<tbody>"+
         "<tr>"+
@@ -196,7 +222,7 @@ class ListSubmissions(val assignmentId: String) {
  "<td>Tests run: 2, Failures: 0, Errors: 0, Time elapsed: ${submissao.elapsed} sec</td>"+
  "</tr>"+
 
-"   </tbody>"+
+
 " </table>"+
  "<br>"+
 
@@ -285,10 +311,11 @@ init {
 
  Authentication.httpClient.newCall(request).execute().use { response ->
      submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
-     Globals.listaTempSub = submissionList
+
 
  }
      updateAllReports(submissionList)
+     Globals.listaTempSub = submissionList
      submissionList
  showSubmissionList()
 

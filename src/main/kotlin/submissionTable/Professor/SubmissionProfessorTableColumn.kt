@@ -20,7 +20,6 @@ package assignmentTable
 
 import com.tfc.ulht.Globals
 import data.Submission
-import data.Submission_Professor
 import submissionTable.Professor.SubmissionProfessorTableButtonEditor
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -44,8 +43,13 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission>, assignme
         var iterator = 0
         for (submission in submissionListP) {
            // if(submission.assignmentId == idAssi){
-                data[iterator][0] = submission.groupId.toString()
-                data[iterator][1] = submission.groupAuthors.toString()
+                data[iterator][0] = submission.idGroup.toString()
+            println("id : " + submission.idGroup)
+            println("idG" + submission.idGroup)
+            println("grupo: " + submission.groupAuthors)
+            var prename = submission.groupAuthors.split("name=")
+            var name = prename.get(1).split(",")
+            data[iterator][1] = name.get(0).toString()
                 data[iterator][3] = submission.submissionDate.toString()
                 data[iterator][4] = submission.status
                 data[iterator][5] = submission.coverage.toString()
@@ -109,7 +113,7 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission>, assignme
         * Download Last
         */
         table.columnModel.getColumn(downloadLast).cellRenderer =
-            AssignmentTableButtonRenderer("Show Submission Download")
+            AssignmentTableButtonRenderer("Download")
         table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Download last SubmissionA", frame,assignmentID)
 
 

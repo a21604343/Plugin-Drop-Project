@@ -1,18 +1,15 @@
 package submissionTable.Professor
 
-import assignmentTable.SubmissionTableColumn
+
 import com.intellij.ide.impl.ProjectUtil
 import com.tfc.ulht.FastOpener
 import com.tfc.ulht.Globals
-import com.tfc.ulht.assignmentComponents.ListAssignment
-import com.tfc.ulht.submissionComponents.ListSubmissions
-import com.tfc.ulht.submissionComponents.Professor.ListSubmissions_Professor
-import data.Submission_Professor
+import kotlin.random.Random
+
 import submissionTable.submissionHistory.ListSubmissionsHistory
-import submissionTable.submissionHistory.SubmissionHistoryTableButtonEditor
-import submissionTable.submissionHistory.SubmissionHistoryTableColumn
+
 import java.awt.Component
-import java.awt.Desktop
+
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URL
@@ -21,10 +18,10 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import java.net.HttpURLConnection;
 import javax.net.ssl.HttpsURLConnection
+
 import javax.swing.*
-import javax.swing.event.HyperlinkEvent
-import javax.swing.event.HyperlinkListener
 
 
 internal class SubmissionProfessorTableButtonEditor(
@@ -40,6 +37,7 @@ internal class SubmissionProfessorTableButtonEditor(
     private var column: Int = 0
     private var report: String = ""
     private var idGroup: String=""
+    private var tempFileName : String = ""
 
 
     init {
@@ -73,7 +71,7 @@ internal class SubmissionProfessorTableButtonEditor(
             if (column == 2) {
                 if(Globals.user_type == 0){
 
-                    ListSubmissionsHistory("sampleJavaProject",5)
+                    ListSubmissionsHistory("sampleJavaProject",44)
                     // SubmissionHistoryTableColumn(findListById(idGroup))
                     //  SubmissionTableColumn(Globals.listaTempSub)
                     //ListSubmissions("sampleJavaProject")
@@ -93,19 +91,20 @@ internal class SubmissionProfessorTableButtonEditor(
                 tempFrame.isVisible = true
             }
             else if (column == 7) { // Download LAST
-                // for(assiGlobal in Globals.listAssignments){
-                //   for(assiIDGroup in assiGlobal.listSubsId.values){
+
                 downloadSubmissao()
 
-                var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
+                // var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
+
+                 var f = FastOpener.adjust(File(tempFileName))
+
+                //var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\Downloads\\src"))
+
                 if(f != null){
                     ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
                 }
 
-                //   }
-                  //  if(id.id)
 
-                //  }
                 Globals.submissionSelectedToDownload = "13"
                     JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo X").toString()
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
@@ -134,25 +133,34 @@ internal class SubmissionProfessorTableButtonEditor(
 
     fun downloadSubmissao() {
         try {
-            val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
-            val con = url.openConnection() as HttpsURLConnection
+            //val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
+             val url = URL("http://localhost:8080/downloadOriginalProject/47")
+            val con = url.openConnection() as HttpURLConnection
             val baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE"
-            val outputFile = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name3.zip"
-            con.inputStream.use { stream -> Files.copy(stream, Paths.get(outputFile)) }
+            tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            val outputFile = tempFileName
+            con.inputStream.use { stream -> {
+                println("stream :" + stream)
+                Files.copy(stream, Paths.get(outputFile))
+            } }
             extractFolder(outputFile,baseFolder)
         } catch (e: MalformedURLException) {
+            println("URL malformed")
             e.printStackTrace()
         } catch (e: java.nio.file.FileAlreadyExistsException) {
             println("O ficheiro de destino já existe")
         } catch (e: FileNotFoundException) {
+            println("file not found")
             e.printStackTrace()
         } catch (e: IOException) {
+            println("input e output error")
             e.printStackTrace()
         }
     }
 
     private fun extractFolder(zipFile: String, extractFolder: String) {
         try {
+            println("extrac")
             val BUFFER = 2048
             val file = File(zipFile)
             val zip = ZipFile(file)
@@ -196,6 +204,13 @@ internal class SubmissionProfessorTableButtonEditor(
             println("ERROR: " + e.message)
         }
     }
+
+    fun rand(start: Int, end: Int): Int {
+        require(start <= end) { "Illegal Argument" }
+        val rand = Random(System.nanoTime())
+        return (start..end).random(rand)
+    }
+
 
     override fun stopCellEditing(): Boolean {
         clicked = false

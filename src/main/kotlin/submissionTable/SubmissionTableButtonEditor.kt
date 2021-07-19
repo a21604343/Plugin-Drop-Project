@@ -3,33 +3,21 @@ package assignmentTable
 
 
 
-import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.fileEditor.OpenFileDescriptor
-import com.intellij.openapi.fileEditor.ex.FileEditorProviderManager
-import com.intellij.openapi.fileEditor.impl.NonProjectFileWritingAccessProvider
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.io.StreamUtil
 
-import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.openapi.vfs.VirtualFile
-import com.tfc.ulht.Globals
-import org.omg.PortableInterceptor.ACTIVE
 import java.awt.Component
-import java.awt.Desktop
+
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URL
-import java.nio.channels.Channels
-import java.nio.channels.FileChannel
-import java.nio.channels.ReadableByteChannel
+
 import java.nio.file.Files
-import java.nio.file.Files.write
+
 import java.nio.file.Paths
 import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
+
 import javax.net.ssl.HttpsURLConnection
 import javax.swing.*
-import  java.nio.file.Files.write
+
 import java.util.*
 import java.util.zip.ZipFile
 

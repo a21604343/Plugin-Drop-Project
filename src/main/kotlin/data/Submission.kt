@@ -28,7 +28,8 @@ import java.util.*
 @JsonClass(generateAdapter = true)
 data class Submission(
     val submissionId: Long,
-    var groupId: Long?,
+    var idGroup: Long?,
+
     var groupAuthors: String,
     val submitterUserId : String,
     val submissionDate: String?,
@@ -36,12 +37,12 @@ data class Submission(
     val summary: String?,
     val status : String,
     val structureErrors: String?,
-    /*
+
     val teacherTests: String?,
     val hiddenTests: String?,
     val studentTests: String?,
 
-     */
+
     val elapsed: String?,
     var coverage: Int?,
     val markedAsFinal: Boolean,

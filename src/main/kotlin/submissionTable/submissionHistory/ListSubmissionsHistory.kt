@@ -32,13 +32,14 @@ class ListSubmissionsHistory(assignmentId : String, GroupId: Long) {
 
 
         init {
+
                 println("***** " + REQUEST_URL)
                 val request = Request.Builder()
                     .url(REQUEST_URL)
                     .build()
 
                 Authentication.httpClient.newCall(request).execute().use { response ->
-                    submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
+                   // submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
                 }
 
                 submissionList

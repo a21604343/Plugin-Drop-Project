@@ -3,27 +3,22 @@ package submissionTable.submissionHistory
 import com.intellij.ide.impl.ProjectUtil
 import com.tfc.ulht.FastOpener
 import com.tfc.ulht.Globals
-import com.tfc.ulht.submissionComponents.ListSubmissions
-import okhttp3.Request
-import sun.net.www.http.HttpClient
-import java.awt.Component
+
 import javax.swing.*
-import sun.net.www.http.HttpCaptureOutputStream
-import java.awt.Desktop
+
+import java.awt.Component
+
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URL
-import java.nio.channels.Channels
-import java.nio.channels.FileChannel
-import java.nio.channels.ReadableByteChannel
+
 import java.nio.file.Files
-import java.nio.file.Path
+
 import java.nio.file.Paths
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
+
 import javax.net.ssl.HttpsURLConnection
 
 
@@ -71,7 +66,7 @@ internal class SubmissionHistoryTableButtonEditor(
             if (column == 2) {
                 if(Globals.user_type == 0){
                     // resolver problema com o submissionID
-
+                    ListSubmissionsHistory("sampleJavaProject",44)
                     //ListSubmissions_Professor(assignmentId) // troquei assingmentId por "1" efeitos de teste
                 }else{
                   //  ListSubmissions(assignmentId)
