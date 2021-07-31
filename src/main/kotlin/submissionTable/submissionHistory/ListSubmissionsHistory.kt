@@ -14,7 +14,7 @@ import okhttp3.Request
 import java.lang.reflect.Type
 
 
-class ListSubmissionsHistory(assignmentId : String, GroupId: Long) {
+class ListSubmissionsHistory(assignmentId : String, GroupId: String) {
         companion object {
             var selectedSubmission: String = ""
         }
@@ -42,7 +42,9 @@ class ListSubmissionsHistory(assignmentId : String, GroupId: Long) {
                    // submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
                 }
 
-                submissionList
+
+
+                submissionList = Globals.hashSubByGroupId.get(GroupId) as List<Submission>
                 showSubmissionList()
 
 

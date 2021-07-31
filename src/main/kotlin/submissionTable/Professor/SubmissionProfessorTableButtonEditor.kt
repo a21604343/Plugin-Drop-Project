@@ -4,7 +4,13 @@ package submissionTable.Professor
 import com.intellij.ide.impl.ProjectUtil
 import com.tfc.ulht.FastOpener
 import com.tfc.ulht.Globals
+import com.tfc.ulht.download.FileDownloader
+import com.tfc.ulht.download.FileWriter
+import com.tfc.ulht.download.ProgressCallBack
+import com.tfc.ulht.loginComponents.Authentication
+import okhttp3.Request
 import kotlin.random.Random
+
 
 import submissionTable.submissionHistory.ListSubmissionsHistory
 
@@ -36,7 +42,7 @@ internal class SubmissionProfessorTableButtonEditor(
     private var row: Int = 0
     private var column: Int = 0
     private var report: String = ""
-    private var idGroup: String=""
+    private var idGroup: String = ""
     private var tempFileName : String = ""
 
 
@@ -71,11 +77,8 @@ internal class SubmissionProfessorTableButtonEditor(
             if (column == 2) {
                 if(Globals.user_type == 0){
 
-                    ListSubmissionsHistory("sampleJavaProject",44)
-                    // SubmissionHistoryTableColumn(findListById(idGroup))
-                    //  SubmissionTableColumn(Globals.listaTempSub)
-                    //ListSubmissions("sampleJavaProject")
-                    //ListSubmissions_Professor(assignmentId) // troquei assingmentId por "1" efeitos de teste
+                    ListSubmissionsHistory("sampleJavaProject",idGroup)
+
                 }else{
                   //  ListSubmissions(assignmentId)
                 }
@@ -106,7 +109,7 @@ internal class SubmissionProfessorTableButtonEditor(
 
 
                 Globals.submissionSelectedToDownload = "13"
-                    JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo X").toString()
+                    JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo ${this.idGroup}").toString()
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
                 /*Globals.choosenColumn = column
                 Globals.choosenRow = row*/
@@ -134,16 +137,23 @@ internal class SubmissionProfessorTableButtonEditor(
     fun downloadSubmissao() {
         try {
             //val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
-             val url = URL("http://localhost:8080/downloadOriginalProject/47")
-            val con = url.openConnection() as HttpURLConnection
+
+             val url = URL("http://localhost:8080/downloadOriginalProject/46")
+                 val urlToAutenticate = "http://localhost:8080/downloadOriginalProject/46"
             val baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE"
             tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
             val outputFile = tempFileName
-            con.inputStream.use { stream -> {
-                println("stream :" + stream)
-                Files.copy(stream, Paths.get(outputFile))
-            } }
-            extractFolder(outputFile,baseFolder)
+            var ficheiroDestino : OutputStream = FileOutputStream("C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip")
+            //var progressCallBack : ProgressCallBack
+
+            var downloader = FileDownloader(Authentication.httpClient,com.tfc.ulht.download.FileWriter(ficheiroDestino))
+            downloader.download(urlToAutenticate)
+
+
+            //Files.copy(ficheiroDestino, Paths.get(outputFile))
+
+            extractFolder(ficheiroDestino.toString(),baseFolder)
+
         } catch (e: MalformedURLException) {
             println("URL malformed")
             e.printStackTrace()

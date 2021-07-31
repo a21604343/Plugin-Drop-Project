@@ -28,10 +28,7 @@ class ListAssignment : AnAction() {
         List::class.java,
         Assignment::class.java
     )
-    val type2: Type = Types.newParameterizedType(
-        List::class.java,
-        Assignment_Professor::class.java
-    )
+
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/v1/teacherAssignmentList"///"${Globals.REQUEST_URL}/api/v1/assignmentList"
     private var assignmentList = listOf<Assignment>()
@@ -39,7 +36,7 @@ class ListAssignment : AnAction() {
     private val moshi = Moshi.Builder().build()
 
     private val assignmentJsonAdapter: JsonAdapter<List<Assignment>> = moshi.adapter(type)
-    //private val assignmentProfessorJsonAdapter: JsonAdapter<List<Assignment_Professor>> = moshi.adapter(type2)
+    
 
     //________________________________________________________________/////
 
@@ -48,7 +45,7 @@ class ListAssignment : AnAction() {
     val listaSubsGrupo: MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
     var dicSubs : HashMap<String,MutableList<Submission_Professor>> = HashMap()
 
-   val assi1 = Assignment("1","aedFinal","java","29-01-2021",3,"24","",true)
+   //val assi1 = Assignment("1","aedFinal","java","29-01-2021",3,"24","",true)
     //val assi2 = Assignment_Professor("2","LP1Final","java","29-01-2021",listaSubsGrupo,"3","24",
     //"",dicSubs,"ex2.html","detalhes","sim")
     //val assi2 = Assignment_Professor("2","Java","10-02-2021",listaSubsGrupo,"ex2.html","não")
@@ -81,12 +78,18 @@ class ListAssignment : AnAction() {
          }
      }
 
+    fun updateLastSubDate(){
+        for(assi in Globals.listAssignments){
+
+        }
+    }
+
     override fun actionPerformed(e: AnActionEvent) {
         if (!Globals.taLigado) {
 
             //listaAssignments_A.add(assiAluno1)
             //listaAssignments_A.add(assiAluno2)
-            listaAssignments_P.add(assi1)
+           // listaAssignments_P.add(assi1)
 
             //listaAssignments_P.add(assi2)
             addListGlobal(listaAssignments_P)
@@ -104,6 +107,8 @@ class ListAssignment : AnAction() {
                      val request = Request.Builder()
                 .url(REQUEST_URL)
                 .build()
+
+
 
             Authentication.httpClient.newCall(request).execute().use { response ->
                     assignmentList = assignmentJsonAdapter.fromJson(response.body()!!.source())!!

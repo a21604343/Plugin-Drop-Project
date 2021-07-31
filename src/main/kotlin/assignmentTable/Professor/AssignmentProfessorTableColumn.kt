@@ -32,7 +32,7 @@ import javax.swing.*
 class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame() {
 
     private var data = Array(assignmentList.size) { Array(8) { "" } }
-    private var headers = arrayOf("Assignment ID", "Nome", "Last Submission","Submissoes", "Detalhes","","Arquivado")
+    private var headers = arrayOf("Assignment ID", "Nome", "Last Submission Date","Submissoes", "Detalhes","","Arquivado")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Available Assignments")
     private val listSubmissionsButton: Int = 3

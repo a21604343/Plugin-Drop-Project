@@ -28,10 +28,10 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class SubmissionProfessorTableColumn(submissionListP: List<Submission>, assignmentID : String) : JFrame() {
+class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignmentID : String) : JFrame() {
 
     private var data = Array(submissionListP.size) { Array(8) { "" } }
-    private var headers = arrayOf("ID do Grupo", "Nome Autores", "Submissões", "Last Sub Date", "Status","Indicadores","Relatório Última Sub","Download Última Submissão")
+    private var headers = arrayOf("ID do Grupo", "Nome Autores", "Submissões", "Last Sub Date", "Status","Indicadores","Relatório Última Submissão","Download Última Submissão")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Submissions By Group")
     private var lastReport: Int = 6
@@ -42,18 +42,19 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission>, assignme
     init {
         var iterator = 0
         for (submission in submissionListP) {
-           // if(submission.assignmentId == idAssi){
-                data[iterator][0] = submission.idGroup.toString()
-            println("id : " + submission.idGroup)
-            println("idG" + submission.idGroup)
-            println("grupo: " + submission.groupAuthors)
-            var prename = submission.groupAuthors.split("name=")
-            var name = prename.get(1).split(",")
-            data[iterator][1] = name.get(0).toString()
-                data[iterator][3] = submission.submissionDate.toString()
+                data[iterator][0] = submission?.idGroup.toString()
+            println("id : " + submission?.idGroup)
+            println("idG" + submission?.idGroup)
+            println("grupo: " + submission?.groupAuthors)
+            var prename = submission?.groupAuthors?.split("name=")
+            var name = prename?.get(1)?.split(",")
+            data[iterator][1] = name?.get(0).toString()
+                data[iterator][3] = submission?.submissionDate.toString()
+            if (submission != null) {
                 data[iterator][4] = submission.status
-                data[iterator][5] = submission.coverage.toString()
-                data[iterator][6] = submission.report.toString()
+            }
+                data[iterator][5] = submission?.coverage.toString()
+                data[iterator][6] = submission?.report.toString()
                 //data[iterator][7] = submission.downloadLast.toString()
           //  }
 
@@ -85,12 +86,13 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission>, assignme
                 checkColumnClicked(column)
             }
         })
-        table.rowHeight = 50
+        table.rowHeight = 45
         table.columnModel.getColumn(0).preferredWidth = 75
-        table.columnModel.getColumn(1).preferredWidth = 185
-        table.columnModel.getColumn(2).preferredWidth = 135
-        table.columnModel.getColumn(1).preferredWidth = 150
-        table.columnModel.getColumn(2).preferredWidth = 150
+        table.columnModel.getColumn(1).preferredWidth = 175
+        table.columnModel.getColumn(2).preferredWidth = 110
+        table.columnModel.getColumn(3).preferredWidth = 85
+        table.columnModel.getColumn(6).preferredWidth = 150
+        table.columnModel.getColumn(7).preferredWidth = 150
 
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         //table.removeColumn(table.columnModel.getColumn(3))

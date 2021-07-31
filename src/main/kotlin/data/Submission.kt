@@ -28,7 +28,7 @@ import java.util.*
 @JsonClass(generateAdapter = true)
 data class Submission(
     val submissionId: Long,
-    var idGroup: Long?,
+    var idGroup: Long,
 
     var groupAuthors: String,
     val submitterUserId : String,

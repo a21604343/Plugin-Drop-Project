@@ -32,7 +32,6 @@ import java.lang.reflect.Type
 import data.Submission
 import data.Submission_Professor
 
-import java.util.*
 import okhttp3.Request
 
 class ListSubmissions(val assignmentId: String) {
@@ -51,6 +50,7 @@ class ListSubmissions(val assignmentId: String) {
     private val moshi = Moshi.Builder().build()
     private val submissionProfessorJsonAdapter: JsonAdapter<List<Submission_Professor>> = moshi.adapter(type)
     private val submissionJsonAdapter: JsonAdapter<List<Submission>> = moshi.adapter(type)
+    private var firstTime : Boolean = true
 
 
     var listaSubsAluno: MutableList<Submission> = mutableListOf<Submission>()
@@ -288,6 +288,39 @@ fun addSubsToListGlobal (listaSubsOriginal : MutableList<Submission_Professor>){
 
 */
 
+    fun sortByGroups(listSubs : List<Submission>){
+        for(sub in listSubs){
+
+            if (Globals.hashSubByGroupId.isEmpty()){
+                println("grupo id:" + sub.idGroup)
+                Globals.hashSubByGroupId.put(sub.idGroup.toString(), mutableListOf(sub))
+
+            }else{
+                if (Globals.hashSubByGroupId.containsKey(sub.idGroup.toString())){
+                    //println("grupo id:" + sub.idGroup)
+                    Globals.hashSubByGroupId.get(sub.idGroup.toString())?.add(sub)
+
+                }else{
+
+                    //println("grupo id:" + sub.idGroup)
+                    Globals.hashSubByGroupId.put(sub.idGroup.toString(), mutableListOf(sub))
+
+                }
+            }
+        }
+    }
+
+    fun createListById() : MutableList<Submission?> {
+        var listSubById : MutableList<Submission?> = mutableListOf()
+        for (groupId in Globals.hashSubByGroupId.keys){
+            var size = Globals.hashSubByGroupId.get(groupId)?.size
+            if (size != null) {
+                listSubById.add(Globals.hashSubByGroupId.get(groupId)?.get(size-1))
+            }
+        }
+        return listSubById
+    }
+
 init {
  if (!Globals.taLigado) {
      listaSubsGroup.add(sub1)
@@ -314,20 +347,39 @@ init {
 
 
  }
+        Globals.hashSubByGroupId.clear()
      updateAllReports(submissionList)
-     Globals.listaTempSub = submissionList
+     if (firstTime){
+         Globals.listSubmissionsDP = submissionList
+         sortByGroups(submissionList)
+         firstTime = false
+     }else{
+             Globals.hashSubByGroupId.clear()
+             sortByGroups(submissionList)
+             Globals.listSubmissionsDP = submissionList
+
+     }
+
+
+
+     println(Globals.hashSubByGroupId.size)
+     for(ex in Globals.hashSubByGroupId.keys){
+         println(Globals.hashSubByGroupId.get(ex)?.size)
+     }
+
+     var finalList = createListById()
      submissionList
- showSubmissionList()
+ showSubmissionList(finalList)
 
  }
 }
 
 
 
-private fun showSubmissionList() {
+private fun showSubmissionList(listSubmissions : List<Submission?>) {
 
  if(Globals.user_type == 0){
-     SubmissionProfessorTableColumn(submissionList,assignmentId)
+     SubmissionProfessorTableColumn(listSubmissions,assignmentId)
  }else{
      SubmissionTableColumn(submissionList)
  }

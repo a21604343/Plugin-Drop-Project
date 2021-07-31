@@ -20,6 +20,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 import javax.net.ssl.HttpsURLConnection
+import kotlin.random.Random
 
 
 internal class SubmissionHistoryTableButtonEditor(
@@ -34,6 +35,7 @@ internal class SubmissionHistoryTableButtonEditor(
     private var column: Int = 0
     private var submissionReport: String = ""
     private var submissionId: String=""
+    private var tempFileName : String = ""
 
     init {
         button.isOpaque = true
@@ -66,7 +68,7 @@ internal class SubmissionHistoryTableButtonEditor(
             if (column == 2) {
                 if(Globals.user_type == 0){
                     // resolver problema com o submissionID
-                    ListSubmissionsHistory("sampleJavaProject",44)
+                    //ListSubmissionsHistory("sampleJavaProject",44)
                     //ListSubmissions_Professor(assignmentId) // troquei assingmentId por "1" efeitos de teste
                 }else{
                   //  ListSubmissions(assignmentId)
@@ -91,7 +93,7 @@ internal class SubmissionHistoryTableButtonEditor(
                 Globals.submissionSelectedToDownload = submissionId
 
                 //Tratar Download Submissão
-                    JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo X").toString()
+                    JOptionPane.showMessageDialog(null, "Preparando o download da submissão ${this.submissionId} do Grupo ").toString()
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
                 /*Globals.choosenColumn = column
                 Globals.choosenRow = row*/
@@ -114,7 +116,8 @@ internal class SubmissionHistoryTableButtonEditor(
             val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
             val con = url.openConnection() as HttpsURLConnection
             val baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE"
-            val outputFile = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name3.zip"
+            tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            val outputFile = tempFileName
             con.inputStream.use { stream -> Files.copy(stream, Paths.get(outputFile)) }
             extractFolder(outputFile,baseFolder)
         } catch (e: MalformedURLException) {
@@ -172,6 +175,11 @@ internal class SubmissionHistoryTableButtonEditor(
         } catch (e: java.lang.Exception) {
             println("ERROR: " + e.message)
         }
+    }
+    fun rand(start: Int, end: Int): Int {
+        require(start <= end) { "Illegal Argument" }
+        val rand = Random(System.nanoTime())
+        return (start..end).random(rand)
     }
 
 

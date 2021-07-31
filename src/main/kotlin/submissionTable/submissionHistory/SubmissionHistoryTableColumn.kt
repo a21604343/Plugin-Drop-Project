@@ -45,6 +45,7 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
                 data[iterator][2] = submission.status.toString()
                 data[iterator][3] = submission.markedAsFinal.toString()
                 data[iterator][4] = submission.summary.toString()
+                //elapsed vem null do DP
                 data[iterator][5] = submission.elapsed.toString()
                 data[iterator][6] = submission.report.toString()
 
@@ -64,11 +65,11 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
             }
         }
         table.rowHeight = 50
-        table.columnModel.getColumn(0).preferredWidth = 75
-        table.columnModel.getColumn(1).preferredWidth = 185
-        table.columnModel.getColumn(2).preferredWidth = 135
-        table.columnModel.getColumn(1).preferredWidth = 150
-        table.columnModel.getColumn(2).preferredWidth = 150
+        table.columnModel.getColumn(0).preferredWidth = 50
+        table.columnModel.getColumn(1).preferredWidth = 85
+        table.columnModel.getColumn(2).preferredWidth = 50
+        table.columnModel.getColumn(3).preferredWidth = 45
+        table.columnModel.getColumn(4).preferredWidth = 110
 
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         //table.removeColumn(table.columnModel.getColumn(3))
