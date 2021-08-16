@@ -5,29 +5,17 @@ import com.intellij.ide.impl.ProjectUtil
 import com.tfc.ulht.FastOpener
 import com.tfc.ulht.Globals
 import com.tfc.ulht.download.FileDownloader
-import com.tfc.ulht.download.FileWriter
-import com.tfc.ulht.download.ProgressCallBack
 import com.tfc.ulht.loginComponents.Authentication
-import okhttp3.Request
-import kotlin.random.Random
-
-
 import submissionTable.submissionHistory.ListSubmissionsHistory
-
 import java.awt.Component
-
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URL
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.net.HttpURLConnection;
-import javax.net.ssl.HttpsURLConnection
-
 import javax.swing.*
+import kotlin.random.Random
 
 
 internal class SubmissionProfessorTableButtonEditor(
@@ -44,6 +32,7 @@ internal class SubmissionProfessorTableButtonEditor(
     private var report: String = ""
     private var idGroup: String = ""
     private var tempFileName : String = ""
+    private var baseFolder = ""
 
 
     init {
@@ -99,7 +88,7 @@ internal class SubmissionProfessorTableButtonEditor(
 
                 // var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
 
-                 var f = FastOpener.adjust(File(tempFileName))
+                 var f = FastOpener.adjust(File(baseFolder))
 
                 //var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\Downloads\\src"))
 
@@ -138,21 +127,20 @@ internal class SubmissionProfessorTableButtonEditor(
         try {
             //val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
 
-             val url = URL("http://localhost:8080/downloadOriginalProject/46")
-                 val urlToAutenticate = "http://localhost:8080/downloadOriginalProject/46"
-            val baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE"
-            tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
-            val outputFile = tempFileName
-            var ficheiroDestino : OutputStream = FileOutputStream("C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip")
+             //val url = URL("http://localhost:8080/downloadOriginalProject/46")
+                 val urlToAutenticate = "http://localhost:8080/downloadMavenProject/37"
+            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" // adaptar com rand, para multiplas aberturas
+            //tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            //val outputFile = tempFileName
+             tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            var ficheiroDestino : OutputStream = FileOutputStream(tempFileName)
             //var progressCallBack : ProgressCallBack
 
             var downloader = FileDownloader(Authentication.httpClient,com.tfc.ulht.download.FileWriter(ficheiroDestino))
             downloader.download(urlToAutenticate)
-
-
             //Files.copy(ficheiroDestino, Paths.get(outputFile))
-
-            extractFolder(ficheiroDestino.toString(),baseFolder)
+            println("output ficheiro destino: " + ficheiroDestino.toString())
+            extractFolder(tempFileName,baseFolder)
 
         } catch (e: MalformedURLException) {
             println("URL malformed")
@@ -173,6 +161,7 @@ internal class SubmissionProfessorTableButtonEditor(
             println("extrac")
             val BUFFER = 2048
             val file = File(zipFile)
+            //val fileoutput = FileOutputStream(file)
             val zip = ZipFile(file)
             File(extractFolder).mkdir()
             val zipFileEntries: Enumeration<*> = zip.entries()
