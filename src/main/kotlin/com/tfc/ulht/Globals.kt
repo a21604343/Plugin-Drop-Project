@@ -42,6 +42,7 @@ class Globals {
 
 
         var listAssignments : MutableList<Assignment> = ArrayList()
+        var hashSubmissionsByAssignment : HashMap<String,MutableList<Submission>> = hashMapOf()
         var listAssignmentsDP : List<Assignment> = ArrayList()
         var listSubmissionsDP : List<Submission> = ArrayList()
         var hashSubByGroupId : HashMap<String,MutableList<Submission>> = hashMapOf()

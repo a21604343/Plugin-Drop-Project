@@ -240,71 +240,19 @@ fun updateAllReports(listaSubs : List<Submission>){
  }
 }
 
-fun checkID(listaSubs : MutableList<Submission_Professor>) : MutableList<Submission_Professor>{
- var listaFinal : MutableList<Submission_Professor> = mutableListOf()
- for(sub in listaSubs){
-     if (sub.assignmentId == assignmentId){
-         listaFinal.add(sub)
-     }
- }
- return listaFinal
 
-}
-/*
-fun addSubsToListGlobal (listaSubsOriginal : MutableList<Submission_Professor>){
- for (subOriginal in listaSubsOriginal){
-     for(assiGlobal in Globals.listAssignments){
-         if(subOriginal.assignmentId == assiGlobal.id){
-             for (subs in assiGlobal.listSubsId.keys){
-                 if (subs == subOriginal.GroupId){
-                     var existe = false
-                     for (sub in assiGlobal.listSubsId.get(subOriginal.GroupId)!!){
-                         if (sub.submissionId == subOriginal.submissionId){
-                           existe = true
-                         }
-                     }
-                     if (!existe){
 
-                         assiGlobal.listSubsId.get(subOriginal.GroupId)?.add(subOriginal)
-                         existe = false
-                     }
-                 }else{ // não existe key com aquele IDgroup
-                     var listTemp : MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
-                     listTemp.add(subOriginal)
-
-                     assiGlobal.listSubsId.put(subOriginal.GroupId,listTemp)
-                 }
-             }
-
-             var listTemp : MutableList<Submission_Professor> = mutableListOf<Submission_Professor>()
-             listTemp.add(subOriginal)
-             assiGlobal.listSubsId.put(subOriginal.GroupId,listTemp)
-
-         }
-     }
- }
-
-}
-
-*/
 
     fun sortByGroups(listSubs : List<Submission>){
         for(sub in listSubs){
-
             if (Globals.hashSubByGroupId.isEmpty()){
                 println("grupo id:" + sub.idGroup)
                 Globals.hashSubByGroupId.put(sub.idGroup.toString(), mutableListOf(sub))
-
             }else{
                 if (Globals.hashSubByGroupId.containsKey(sub.idGroup.toString())){
-                    //println("grupo id:" + sub.idGroup)
                     Globals.hashSubByGroupId.get(sub.idGroup.toString())?.add(sub)
-
                 }else{
-
-                    //println("grupo id:" + sub.idGroup)
                     Globals.hashSubByGroupId.put(sub.idGroup.toString(), mutableListOf(sub))
-
                 }
             }
         }
@@ -347,6 +295,8 @@ init {
 
 
  }
+     val listTemp : MutableList<Submission> = submissionList as MutableList<Submission>
+     Globals.hashSubmissionsByAssignment.put(assignmentId, listTemp)
         Globals.hashSubByGroupId.clear()
      updateAllReports(submissionList)
      if (firstTime){
@@ -358,13 +308,6 @@ init {
              sortByGroups(submissionList)
              Globals.listSubmissionsDP = submissionList
 
-     }
-
-
-
-     println(Globals.hashSubByGroupId.size)
-     for(ex in Globals.hashSubByGroupId.keys){
-         println(Globals.hashSubByGroupId.get(ex)?.size)
      }
 
      var finalList = createListById()

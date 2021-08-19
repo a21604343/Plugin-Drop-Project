@@ -3,6 +3,9 @@ package submissionTable.submissionHistory
 import com.intellij.ide.impl.ProjectUtil
 import com.tfc.ulht.FastOpener
 import com.tfc.ulht.Globals
+import com.tfc.ulht.download.FileDownloader
+import com.tfc.ulht.download.FileWriter
+import com.tfc.ulht.loginComponents.Authentication
 
 import javax.swing.*
 
@@ -36,6 +39,7 @@ internal class SubmissionHistoryTableButtonEditor(
     private var submissionReport: String = ""
     private var submissionId: String=""
     private var tempFileName : String = ""
+    private var baseFolder = ""
 
     init {
         button.isOpaque = true
@@ -90,16 +94,17 @@ internal class SubmissionHistoryTableButtonEditor(
 
             }
             else if (column == 8) { // Download
-                Globals.submissionSelectedToDownload = submissionId
+
 
                 //Tratar Download Submissão
                     JOptionPane.showMessageDialog(null, "Preparando o download da submissão ${this.submissionId} do Grupo ").toString()
+                Globals.submissionSelectedToDownload = submissionId
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
                 /*Globals.choosenColumn = column
                 Globals.choosenRow = row*/
 
                 downloadSubmissao()
-                var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
+                var f = FastOpener.adjust(File(baseFolder))
                 if(f != null){
                     ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
                 }
@@ -113,28 +118,35 @@ internal class SubmissionHistoryTableButtonEditor(
 
     fun downloadSubmissao() {
         try {
-            val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
-            val con = url.openConnection() as HttpsURLConnection
-            val baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE"
+            val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + Globals.submissionSelectedToDownload
+            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000) // adaptar com rand, para multiplas aberturas
             tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
-            val outputFile = tempFileName
-            con.inputStream.use { stream -> Files.copy(stream, Paths.get(outputFile)) }
-            extractFolder(outputFile,baseFolder)
+            var ficheiroDestino : OutputStream = FileOutputStream(tempFileName)
+            var downloader = FileDownloader(Authentication.httpClient, FileWriter(ficheiroDestino))
+            downloader.download(urlToAutenticate)
+            //Files.copy(ficheiroDestino, Paths.get(outputFile))
+            extractFolder(tempFileName,baseFolder)
+
         } catch (e: MalformedURLException) {
+            println("URL malformed")
             e.printStackTrace()
         } catch (e: java.nio.file.FileAlreadyExistsException) {
             println("O ficheiro de destino já existe")
         } catch (e: FileNotFoundException) {
+            println("file not found")
             e.printStackTrace()
         } catch (e: IOException) {
+            println("input e output error")
             e.printStackTrace()
         }
     }
 
     private fun extractFolder(zipFile: String, extractFolder: String) {
         try {
+            println("extrac")
             val BUFFER = 2048
             val file = File(zipFile)
+            //val fileoutput = FileOutputStream(file)
             val zip = ZipFile(file)
             File(extractFolder).mkdir()
             val zipFileEntries: Enumeration<*> = zip.entries()
@@ -162,7 +174,6 @@ internal class SubmissionHistoryTableButtonEditor(
                         fos,
                         BUFFER
                     )
-
                     // read and write until last byte is encountered
                     while (`is`.read(data, 0, BUFFER).also { currentByte = it } != -1) {
                         dest.write(data, 0, currentByte)
@@ -176,6 +187,7 @@ internal class SubmissionHistoryTableButtonEditor(
             println("ERROR: " + e.message)
         }
     }
+
     fun rand(start: Int, end: Int): Int {
         require(start <= end) { "Illegal Argument" }
         val rand = Random(System.nanoTime())

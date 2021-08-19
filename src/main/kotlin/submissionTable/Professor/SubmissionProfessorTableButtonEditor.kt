@@ -73,7 +73,7 @@ internal class SubmissionProfessorTableButtonEditor(
                 }
 
             }
-            else if (column == 6) {
+            else if (column == 7) {
                 val ed1 = JEditorPane("text/html", report)
                 ed1.isEditable = false
                 val tempFrame = JFrame("Last Submission Report ")
@@ -82,7 +82,8 @@ internal class SubmissionProfessorTableButtonEditor(
                 tempFrame.setSize(850, 750)
                 tempFrame.isVisible = true
             }
-            else if (column == 7) { // Download LAST
+            else if (column == 8) { // Download LAST
+                JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo ${this.idGroup}, Sub ID = ${checkLastSubToDownload()}").toString()
 
                 downloadSubmissao()
 
@@ -98,7 +99,7 @@ internal class SubmissionProfessorTableButtonEditor(
 
 
                 Globals.submissionSelectedToDownload = "13"
-                    JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo ${this.idGroup}").toString()
+
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
                 /*Globals.choosenColumn = column
                 Globals.choosenRow = row*/
@@ -108,38 +109,32 @@ internal class SubmissionProfessorTableButtonEditor(
         clicked = false
         return label
     }
-/*
-    fun findListById(assignmentID: String, idGroup: String): MutableList<Submission_Professor>? {
-        for(assiGlobal in Globals.listAssignments){
-            for(subs in assiGlobal.listSubsId.keys){
-                if(subs == idGroup){
-                    return assiGlobal.listSubsId.get(idGroup)                }
-            }
+
+    fun checkLastSubToDownload() : String{
+        var resultIdSubmission = ""
+        var size = Globals.hashSubByGroupId.get(idGroup)?.size
+        if (size != null) {
+            resultIdSubmission = Globals.hashSubByGroupId.get(idGroup)?.get(size-1)?.submissionId.toString()
         }
-        return null
+        return resultIdSubmission
     }
-
- */
-
-
 
     fun downloadSubmissao() {
         try {
             //val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
-
              //val url = URL("http://localhost:8080/downloadOriginalProject/46")
-                 val urlToAutenticate = "http://localhost:8080/downloadMavenProject/37"
-            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" // adaptar com rand, para multiplas aberturas
+
+                 val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + checkLastSubToDownload()
+            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000) // adaptar com rand, para multiplas aberturas
             //tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
             //val outputFile = tempFileName
              tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
             var ficheiroDestino : OutputStream = FileOutputStream(tempFileName)
-            //var progressCallBack : ProgressCallBack
+
 
             var downloader = FileDownloader(Authentication.httpClient,com.tfc.ulht.download.FileWriter(ficheiroDestino))
             downloader.download(urlToAutenticate)
             //Files.copy(ficheiroDestino, Paths.get(outputFile))
-            println("output ficheiro destino: " + ficheiroDestino.toString())
             extractFolder(tempFileName,baseFolder)
 
         } catch (e: MalformedURLException) {
@@ -189,7 +184,6 @@ internal class SubmissionProfessorTableButtonEditor(
                         fos,
                         BUFFER
                     )
-
                     // read and write until last byte is encountered
                     while (`is`.read(data, 0, BUFFER).also { currentByte = it } != -1) {
                         dest.write(data, 0, currentByte)

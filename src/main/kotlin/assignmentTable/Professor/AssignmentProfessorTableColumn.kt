@@ -46,16 +46,25 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         for ((iterator, assignment) in assignmentList.withIndex()) {
             data[iterator][0] = assignment.id
             data[iterator][1] = assignment.name
-
-            if (!assignment.date.isNullOrEmpty()) {
+            val idString : String = assignment.id
+            if(Globals.hashSubmissionsByAssignment.get(idString)?.size == 0){
+                data[iterator][2] = "No Submissions Yet"
+            }else{
+                var size = Globals.hashSubmissionsByAssignment.get(idString)?.size
+                if (size != null) {
+                    println("subdate :" + Globals.hashSubmissionsByAssignment.get(idString)?.get(size-1)?.submissionDate.toString())
+                    data[iterator][2] = Globals.hashSubmissionsByAssignment.get(idString)?.get(size-1)?.submissionDate.toString()
+                }
+            }
+            /*
+            if (!assignment.lastSubmissionDate.isNullOrEmpty()) {
                 data[iterator][2] = assignment.lastSubmissionDate.toString()
             } else {
                 data[iterator][2] = "No Submissions Yet"
             }
-
+            */
             data[iterator][4] = assignment.html
             subsTotal = assignment.numSubmissions.toString()
-            //subsGroups = assignment.totalGroups.toString()
             data[iterator][6] = assignment.active.toString()
         }
 
@@ -94,8 +103,9 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         /**
          * Show list of submissionsGroup
          */
+
         table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("SubmissionsGroup")
+            AssignmentProfessorTableButtonRenderer("Submissions By Group")
             table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
 
         /**

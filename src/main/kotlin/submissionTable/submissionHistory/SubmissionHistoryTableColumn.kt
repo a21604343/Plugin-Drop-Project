@@ -36,6 +36,12 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
 
     private var idGroupSubmissionOpen: String = "0"
 
+
+    fun getTimeElapsedFromSummary(summary : String) : List<String> {
+        var summarySplit = summary.split(", Time elapsed: ")
+        return summarySplit
+    }
+
     init {
         var iterator = 0
         if (submissionListP != null) {
@@ -44,9 +50,10 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
                 data[iterator][1] = submission.submissionDate.toString()
                 data[iterator][2] = submission.status.toString()
                 data[iterator][3] = submission.markedAsFinal.toString()
-                data[iterator][4] = submission.summary.toString()
+
+                data[iterator][4] = getTimeElapsedFromSummary(submission.summary.toString()).get(0)
                 //elapsed vem null do DP
-                data[iterator][5] = submission.elapsed.toString()
+                data[iterator][5] = getTimeElapsedFromSummary(submission.summary.toString()).get(1)
                 data[iterator][6] = submission.report.toString()
 
                 if (submission.coverage == null){
@@ -65,11 +72,14 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
             }
         }
         table.rowHeight = 50
-        table.columnModel.getColumn(0).preferredWidth = 50
-        table.columnModel.getColumn(1).preferredWidth = 85
-        table.columnModel.getColumn(2).preferredWidth = 50
-        table.columnModel.getColumn(3).preferredWidth = 45
-        table.columnModel.getColumn(4).preferredWidth = 110
+        table.columnModel.getColumn(0).preferredWidth = 40
+        table.columnModel.getColumn(1).preferredWidth = 70
+        table.columnModel.getColumn(2).preferredWidth = 40
+        table.columnModel.getColumn(3).preferredWidth = 30
+        table.columnModel.getColumn(4).preferredWidth = 140
+        table.columnModel.getColumn(5).preferredWidth = 40
+        table.columnModel.getColumn(6).preferredWidth = 40
+        table.columnModel.getColumn(7).preferredWidth = 40
 
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         //table.removeColumn(table.columnModel.getColumn(3))
