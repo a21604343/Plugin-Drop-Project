@@ -52,7 +52,7 @@ internal class SubmissionProfessorTableButtonEditor(
             button.background = table.background
         }
         this.idGroup = table.model.getValueAt(row,0).toString()
-        this.report = table.model.getValueAt(row, 6).toString()
+        this.report = table.model.getValueAt(row, 8).toString()
         this.row = row
         this.column = col
 
@@ -65,15 +65,12 @@ internal class SubmissionProfessorTableButtonEditor(
         if (clicked) {
             if (column == 2) {
                 if(Globals.user_type == 0){
-
                     ListSubmissionsHistory("sampleJavaProject",idGroup)
-
                 }else{
                   //  ListSubmissions(assignmentId)
                 }
-
             }
-            else if (column == 7) {
+            else if (column == 8) {
                 val ed1 = JEditorPane("text/html", report)
                 ed1.isEditable = false
                 val tempFrame = JFrame("Last Submission Report ")
@@ -82,28 +79,15 @@ internal class SubmissionProfessorTableButtonEditor(
                 tempFrame.setSize(850, 750)
                 tempFrame.isVisible = true
             }
-            else if (column == 8) { // Download LAST
-                JOptionPane.showMessageDialog(null, "Preparando o download da ultima submissão do Grupo ${this.idGroup}, Sub ID = ${checkLastSubToDownload()}").toString()
-
+            else if (column == 9) { // Download LAST
+                JOptionPane.showMessageDialog(null, "Preparing to download last submission of group ${this.idGroup}, Sub ID = ${checkLastSubToDownload()}").toString()
                 downloadSubmissao()
-
                 // var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
-
-                 var f = FastOpener.adjust(File(baseFolder))
-
-                //var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\Downloads\\src"))
-
+                var f = FastOpener.adjust(File(baseFolder))
                 if(f != null){
                     ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
                 }
-
-
-                Globals.submissionSelectedToDownload = "13"
-
-                //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
-                /*Globals.choosenColumn = column
-                Globals.choosenRow = row*/
-
+                Globals.submissionSelectedToDownload = checkLastSubToDownload()
             }
         }
         clicked = false
@@ -123,32 +107,27 @@ internal class SubmissionProfessorTableButtonEditor(
         try {
             //val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
              //val url = URL("http://localhost:8080/downloadOriginalProject/46")
-
-                 val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + checkLastSubToDownload()
-            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000) // adaptar com rand, para multiplas aberturas
-            //tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
-            //val outputFile = tempFileName
-             tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + Globals.submissionSelectedToDownload
+            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000)
+            tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
             var ficheiroDestino : OutputStream = FileOutputStream(tempFileName)
-
-
             var downloader = FileDownloader(Authentication.httpClient,com.tfc.ulht.download.FileWriter(ficheiroDestino))
             downloader.download(urlToAutenticate)
             //Files.copy(ficheiroDestino, Paths.get(outputFile))
             extractFolder(tempFileName,baseFolder)
 
-        } catch (e: MalformedURLException) {
-            println("URL malformed")
-            e.printStackTrace()
-        } catch (e: java.nio.file.FileAlreadyExistsException) {
-            println("O ficheiro de destino já existe")
-        } catch (e: FileNotFoundException) {
-            println("file not found")
-            e.printStackTrace()
-        } catch (e: IOException) {
-            println("input e output error")
-            e.printStackTrace()
-        }
+            } catch (e: MalformedURLException) {
+                println("URL malformed")
+                e.printStackTrace()
+             } catch (e: java.nio.file.FileAlreadyExistsException) {
+                println("O ficheiro de destino já existe")
+            } catch (e: FileNotFoundException) {
+                println("file not found")
+                e.printStackTrace()
+            } catch (e: IOException) {
+                println("input e output error")
+                e.printStackTrace()
+            }
     }
 
     private fun extractFolder(zipFile: String, extractFolder: String) {

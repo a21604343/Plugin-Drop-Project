@@ -27,7 +27,7 @@ import javax.swing.*
 class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame() {
 
     private var data = Array(submissionListP!!.size) { Array(9) { "" } }
-    private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","Indicadores","Tempo","Relatório","Mark as Final","Download Submissão")
+    private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","Indicators","Time","Report","Mark as Final","Download Submission")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Submissions History")
     private var reportSub: Int = 6
@@ -44,6 +44,7 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
 
     init {
         var iterator = 0
+
         if (submissionListP != null) {
             for (submission in submissionListP) {
                 data[iterator][0] = submission.submissionId.toString()
@@ -51,9 +52,48 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
                 data[iterator][2] = submission.status.toString()
                 data[iterator][3] = submission.markedAsFinal.toString()
 
-                data[iterator][4] = getTimeElapsedFromSummary(submission.summary.toString()).get(0)
-                //elapsed vem null do DP
-                data[iterator][5] = getTimeElapsedFromSummary(submission.summary.toString()).get(1)
+                println("TEACHER TESTS : " + submission.teacherTests.toString())
+                println("sTUDENT TESTS : " + submission.studentTests.toString())
+                println("hidden TESTS : " + submission.hiddenTests.toString())
+
+                var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                if(summaryTemp.size > 1){
+                    data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                    data[iterator][5] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                }else{
+                    data[iterator][4] = submission?.structureErrors.toString()
+                    data[iterator][5] = ""
+                }
+
+
+                data[iterator][6] = submission.report.toString()
+
+                if (submission.coverage == null){
+                    submission.coverage = 0
+                }
+                //data[iterator][7] = submission.isFinal.toString()
+                // data[iterator][8] = submission.downloadLast.toString()
+
+                iterator++
+            }
+        }
+        /*
+        if (submissionListP != null) {
+            for (submission in submissionListP) {
+                data[iterator][0] = submission.submissionId.toString()
+                data[iterator][1] = submission.submissionDate.toString()
+                data[iterator][2] = submission.status.toString()
+                data[iterator][3] = submission.markedAsFinal.toString()
+
+                var summaryTemp = getTimeElapsedFromSummary(submission?.summary.toString())
+                if(summaryTemp.size > 1){
+                    data[iterator][4] = getTimeElapsedFromSummary(submission?.summary.toString()).get(0)
+                    data[iterator][5] = getTimeElapsedFromSummary(submission?.summary.toString()).get(1)
+                }else{
+                    // data[iterator][6] = getTimeElapsedFromSummary(submission?.summary.toString()).get(0)
+                    data[iterator][4] = submission?.structureErrors.toString()
+                    data[iterator][5] = ""
+                }
                 data[iterator][6] = submission.report.toString()
 
                 if (submission.coverage == null){
@@ -65,6 +105,8 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
                 iterator++
             }
         }
+
+         */
 
         val table = object : JTable(data, headers) {
             override fun isCellEditable(row: Int, col: Int): Boolean {
@@ -89,8 +131,8 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
          * Show report
          */
         table.columnModel.getColumn(reportSub).cellRenderer =
-            SubmissionHistoryTableButtonRenderer("Relatório")
-        table.columnModel.getColumn(reportSub).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Relatório", frame)
+            SubmissionHistoryTableButtonRenderer("Report")
+        table.columnModel.getColumn(reportSub).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Report", frame)
 
         /**
          * Show report

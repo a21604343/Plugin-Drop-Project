@@ -179,7 +179,7 @@ class ListSubmissions(val assignmentId: String) {
          "</td>"+
          "<td>"+
          "<h4 style=\"margin-top: 3px\">"+
-                //     "<span class=\"label label-success\">${submissao.teacherTests}</span>"+
+                     "<span class=\"label label-success\">${getScoreFromTests(submissao)}</span>"+
          "</h4>"+
          "</td>"+
          "</tr>"+
@@ -214,12 +214,22 @@ class ListSubmissions(val assignmentId: String) {
  "<th>JUnit Summary (Teacher Tests)</th>"+
  "</tr>"+
  "</thead>"+
- "<tbody>"+
- "<tr>"+
- "<td>Coverage ${submissao.coverage} (only visible to teacher</td>"+
- "</tr>"+
- "<tr>"+
- "<td>Tests run: 2, Failures: 0, Errors: 0, Time elapsed: ${submissao.elapsed} sec</td>"+
+ "<tbody>"
+
+        if(Globals.user_type == 0){
+            if (submissao.coverage == null) {
+                submissao.coverage = 0
+            }
+            report += "<tr>" +
+                    "<td>Coverage ${submissao.coverage} (only visible to teacher)</td>" +
+                    "</tr>"
+        }
+
+
+
+
+ report += "<tr>"+
+ "<td>${submissao.teacherTests}</td>"+
  "</tr>"+
 
 
@@ -234,19 +244,24 @@ class ListSubmissions(val assignmentId: String) {
 
 }
 
-fun updateAllReports(listaSubs : List<Submission>){
- for(sub in listaSubs){
-     sub.report = createReport(sub)
- }
-}
+    fun getScoreFromTests(Sub : Submission) : String{
+        val testsSplited = Sub.teacherTests?.split(" ")
 
+        var result = testsSplited?.get(2)?.get(0)?.toInt()?.minus(testsSplited.get(4).get(0).toInt()).toString()
+            result += "/${testsSplited?.get(2)?.get(0).toString()}"
+        return result
+    }
 
+    fun updateAllReports(listaSubs : List<Submission>){
+         for(sub in listaSubs){
+             sub.report = createReport(sub)
+         }
+    }
 
 
     fun sortByGroups(listSubs : List<Submission>){
         for(sub in listSubs){
             if (Globals.hashSubByGroupId.isEmpty()){
-                println("grupo id:" + sub.idGroup)
                 Globals.hashSubByGroupId.put(sub.idGroup.toString(), mutableListOf(sub))
             }else{
                 if (Globals.hashSubByGroupId.containsKey(sub.idGroup.toString())){

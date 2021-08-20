@@ -31,18 +31,20 @@ import javax.swing.*
 
 class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame() {
 
-    private var data = Array(assignmentList.size) { Array(8) { "" } }
-    private var headers = arrayOf("Assignment ID", "Nome", "Last Submission Date","Submissoes", "Detalhes","","Arquivado")
+    private var data = Array(assignmentList.size) { Array(9) { "" } }
+    private var headers = arrayOf("Assignment ID", "Name", "Last Submission Date","Submissions By Group","Nr Submissions","Assignemnt Details","","Active?")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Available Assignments")
     private val listSubmissionsButton: Int = 3
-    private val infoButton: Int = 4
-    private val selectAssignmentButton: Int = 5
+    private val infoButton: Int = 5
+    private val selectAssignmentButton: Int = 6
     private var subsTotal : String = "0"
     private var subsGroups: String = "0"
 
 
     init {
+
+
         for ((iterator, assignment) in assignmentList.withIndex()) {
             data[iterator][0] = assignment.id
             data[iterator][1] = assignment.name
@@ -63,16 +65,42 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
                 data[iterator][2] = "No Submissions Yet"
             }
             */
-            data[iterator][4] = assignment.html
+            var numberSubsByGroup = Globals.hashSubmissionsByAssignment.get(assignment.id)?.size
+
+
+            if(numberSubsByGroup == null){
+                numberSubsByGroup = 0
+            }
+            data[iterator][4] = numberSubsByGroup.toString()
+            println("HTML CHECK : " + assignment.html)
+            data[iterator][5] = assignment.html
             subsTotal = assignment.numSubmissions.toString()
-            data[iterator][6] = assignment.active.toString()
+            data[iterator][7] = assignment.active.toString()
         }
+         // Arranjar solução para mostar numero de subs por assignment, problema: atualiza a coluna toda de uma só vez
+            /**
+             * Show list of submissionsGroup
+
+            var numberSubsByGroup1 = Globals.hashSubmissionsByAssignment.get(assignment.id)?.size
+
+
+            if(numberSubsByGroup1 == null){
+                numberSubsByGroup1 = 0
+            }
+            table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
+                AssignmentProfessorTableButtonRenderer("${numberSubsByGroup1}")
+            table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
+            */
+
+
 
         val table = object : JTable(data, headers) {
             override fun isCellEditable(row: Int, col: Int): Boolean {
-                return col in 3..5
+                return col in 3..6
             }
         }
+
+
         fun checkColumnClicked(column : Int){
             when(column){
                 0 -> {
@@ -103,16 +131,16 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         /**
          * Show list of submissionsGroup
          */
-
         table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Submissions By Group")
+            AssignmentProfessorTableButtonRenderer("Show")
             table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
+
 
         /**
          * Open more info
          */
         table.columnModel.getColumn(infoButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Assignment Details")
+            AssignmentProfessorTableButtonRenderer("Show")
         table.columnModel.getColumn(infoButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Assignment Details", frame)
 
         /**
@@ -123,10 +151,10 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         table.columnModel.getColumn(selectAssignmentButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Select assignment", frame)
 
         val scrollPane = JScrollPane(table)
-        scrollPane.preferredSize = Dimension(1000, 400)
+        scrollPane.preferredSize = Dimension(1200, 400)
         frame.isLocationByPlatform = true
         panel.add(scrollPane, BorderLayout.CENTER)
-        frame.preferredSize = Dimension(1000, 400)
+        frame.preferredSize = Dimension(1200, 400)
         frame.contentPane.add(panel)
 
         frame.pack()

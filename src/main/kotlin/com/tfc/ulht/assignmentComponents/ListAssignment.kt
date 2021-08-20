@@ -31,6 +31,7 @@ class ListAssignment : AnAction() {
 
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/v1/teacherAssignmentList"///"${Globals.REQUEST_URL}/api/v1/assignmentList"
+    private val REQUEST_URL_STUDENT = "${Globals.REQUEST_URL}/api/v1/assignmentList"
     private var assignmentList = listOf<Assignment>()
     private var assignmentListProfessor = listOf<Assignment_Professor>()
     private val moshi = Moshi.Builder().build()
@@ -99,20 +100,24 @@ class ListAssignment : AnAction() {
                 AssignmentTableColumn(listaAssignments_A)
             }
         } else {
-
-
-            println("**** "+ Authentication.alreadyLoggedIn)
         if (Authentication.alreadyLoggedIn) {
 
-                     val request = Request.Builder()
-                .url(REQUEST_URL)
-                .build()
-
-
-
-            Authentication.httpClient.newCall(request).execute().use { response ->
+            if(Globals.user_type == 0){
+                val request = Request.Builder()
+                    .url(REQUEST_URL)
+                    .build()
+                Authentication.httpClient.newCall(request).execute().use { response ->
                     assignmentList = assignmentJsonAdapter.fromJson(response.body()!!.source())!!
-                Globals.listAssignmentsDP = assignmentList
+                    Globals.listAssignmentsDP = assignmentList
+                }
+            }else{
+                val request = Request.Builder()
+                    .url(REQUEST_URL_STUDENT)
+                    .build()
+                Authentication.httpClient.newCall(request).execute().use { response ->
+                    assignmentList = assignmentJsonAdapter.fromJson(response.body()!!.source())!!
+                    Globals.listAssignmentsDP = assignmentList
+                }
             }
             showAssingmentTable()
 

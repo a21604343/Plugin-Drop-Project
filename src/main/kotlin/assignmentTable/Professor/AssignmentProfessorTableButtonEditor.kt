@@ -44,16 +44,12 @@ internal class AssignmentProfessorTableButtonEditor(
         }
 
         this.assignmentId = table.model.getValueAt(row, 0).toString()
-        this.assignmentDetails = table.model.getValueAt(row, 4).toString()
+        this.assignmentDetails = table.model.getValueAt(row, 5).toString()
         this.row = row
         this.column = col
 
         this.table = table
 
-        /*
-        println("Row: $row : Column: $col") // GET LOCATION OF
-        println(table.model.getValueAt(row, 0)) // GET VALUE FROM ROW X AND COLUMN 0 (ID)
-        */
         button.text = label
         clicked = true
         return button
@@ -64,13 +60,13 @@ internal class AssignmentProfessorTableButtonEditor(
             if (column == 3) {
                 if(Globals.user_type == 0){
 
-                    ListSubmissions(assignmentId) // troquei assingmentId por "1" efeitos de teste
+                    ListSubmissions(assignmentId)
                 }else{
                     ListSubmissions(assignmentId)
                 }
 
             }
-            else if (column == 4) { // MORE INFO
+            else if (column == 5) { // MORE INFO
                 val ed1 = JEditorPane("text/html", assignmentDetails) // PREPARE HTML VIEWER
                 ed1.isEditable = false
                 val tempFrame = JFrame()
@@ -87,14 +83,9 @@ internal class AssignmentProfessorTableButtonEditor(
                         }
                     }
                 }
-
-
-            } else if (column == 5) { // SELECT ASSIGNMENT
+            } else if (column == 6) { // SELECT ASSIGNMENT
                 Globals.selectedAssignmentID = assignmentId
                 JOptionPane.showMessageDialog(null, "The assignment with ID: $assignmentId was selected")
-                //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
-                /*Globals.choosenColumn = column
-                Globals.choosenRow = row*/
 
             }
         }

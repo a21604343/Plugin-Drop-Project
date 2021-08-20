@@ -90,14 +90,11 @@ internal class SubmissionHistoryTableButtonEditor(
             }
             else if (column == 7){
                 Globals.submissionSelectedAsFinal = submissionId
-                JOptionPane.showMessageDialog(null, "A submissão de ID: $submissionId  foi marcada como FINAL").toString()
-
+                JOptionPane.showMessageDialog(null, "Submission ID: $submissionId was marked as Final").toString()
             }
             else if (column == 8) { // Download
-
-
                 //Tratar Download Submissão
-                    JOptionPane.showMessageDialog(null, "Preparando o download da submissão ${this.submissionId} do Grupo ").toString()
+                    JOptionPane.showMessageDialog(null, "Preparing to download submission ID: ${this.submissionId}").toString()
                 Globals.submissionSelectedToDownload = submissionId
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
                 /*Globals.choosenColumn = column
@@ -108,8 +105,6 @@ internal class SubmissionHistoryTableButtonEditor(
                 if(f != null){
                     ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
                 }
-
-
             }
         }
         clicked = false
@@ -143,7 +138,7 @@ internal class SubmissionHistoryTableButtonEditor(
 
     private fun extractFolder(zipFile: String, extractFolder: String) {
         try {
-            println("extrac")
+
             val BUFFER = 2048
             val file = File(zipFile)
             //val fileoutput = FileOutputStream(file)

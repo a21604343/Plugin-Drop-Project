@@ -27,7 +27,7 @@ data class Assignment(
     val id: String,
     val name: String,
     val language: String,
-    val date: String?,
+    val dueDate: String?,
     val numSubmissions: Int,
     val html: String,
     val lastSubmissionDate: String?,

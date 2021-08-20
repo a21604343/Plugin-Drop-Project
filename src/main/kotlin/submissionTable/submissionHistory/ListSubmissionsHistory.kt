@@ -41,9 +41,6 @@ class ListSubmissionsHistory(assignmentId : String, GroupId: String) {
                 Authentication.httpClient.newCall(request).execute().use { response ->
                    // submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
                 }
-
-
-
                 submissionList = Globals.hashSubByGroupId.get(GroupId) as List<Submission>
                 showSubmissionList()
 

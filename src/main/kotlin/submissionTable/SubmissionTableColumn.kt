@@ -36,7 +36,7 @@ class SubmissionTableColumn(submissionList: List<Submission>) : JFrame() {
         for (submission in submissionList) {
             data[iterator][0] = submission.submissionId.toString()
             data[iterator][1] = submission.submissionDate.toString()
-            data[iterator][2] = submission.summary.toString()
+            data[iterator][2] = submission.teacherTests.toString()
             data[iterator][3] = submission.report.toString()
 
             iterator++
