@@ -48,6 +48,7 @@ class ListSubmissions(val assignmentId: String) {
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/v1/submissionsList"
     private var submissionList = listOf<Submission>()
     private val moshi = Moshi.Builder().build()
+    private val assignmentID = assignmentId
     private val submissionProfessorJsonAdapter: JsonAdapter<List<Submission_Professor>> = moshi.adapter(type)
     private val submissionJsonAdapter: JsonAdapter<List<Submission>> = moshi.adapter(type)
     private var firstTime : Boolean = true
@@ -337,7 +338,7 @@ init {
 private fun showSubmissionList(listSubmissions : List<Submission?>) {
 
  if(Globals.user_type == 0){
-     SubmissionProfessorTableColumn(listSubmissions,assignmentId)
+     SubmissionProfessorTableColumn(listSubmissions,assignmentID)
  }else{
      SubmissionTableColumn(submissionList)
  }

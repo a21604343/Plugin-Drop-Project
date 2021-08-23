@@ -29,7 +29,8 @@ import kotlin.random.Random
 internal class SubmissionHistoryTableButtonEditor(
     txt: JTextField?,
     private val label: String,
-    private val frame: JFrame
+    private val frame: JFrame,
+    private val assignmentTestsType : String
 ) : DefaultCellEditor(txt) {
     private var button: JButton = JButton(label)
     private var clicked: Boolean = false
@@ -40,6 +41,7 @@ internal class SubmissionHistoryTableButtonEditor(
     private var submissionId: String=""
     private var tempFileName : String = ""
     private var baseFolder = ""
+    private var reportPosition = 6
 
     init {
         button.isOpaque = true
@@ -58,7 +60,17 @@ internal class SubmissionHistoryTableButtonEditor(
             button.background = table.background
         }
         this.submissionId = table.model.getValueAt(row,0).toString()
-        this.submissionReport = table.model.getValueAt(row, 6).toString()
+        when(assignmentTestsType){
+            "0" -> this.submissionReport = table.model.getValueAt(row, 6).toString()
+            "1","3" ->{
+                reportPosition = 7
+             this.submissionReport = table.model.getValueAt(row, 7).toString()}
+            "2" -> {
+                reportPosition = 8
+                this.submissionReport = table.model.getValueAt(row, 8).toString()
+            }
+        }
+
         this.row = row
         this.column = col
 
@@ -79,7 +91,7 @@ internal class SubmissionHistoryTableButtonEditor(
                 }
 
             }
-            else if (column == 6) {
+            else if (column == reportPosition) {
                 val ed1 = JEditorPane("text/html", submissionReport)
                 ed1.isEditable = false
                 val tempFrame = JFrame("Submission Report")
@@ -88,11 +100,12 @@ internal class SubmissionHistoryTableButtonEditor(
                 tempFrame.setSize(850, 750)
                 tempFrame.isVisible = true
             }
-            else if (column == 7){
+            else if (column == reportPosition+1){
                 Globals.submissionSelectedAsFinal = submissionId
+
                 JOptionPane.showMessageDialog(null, "Submission ID: $submissionId was marked as Final").toString()
             }
-            else if (column == 8) { // Download
+            else if (column == reportPosition+2) { // Download
                 //Tratar Download Submissão
                     JOptionPane.showMessageDialog(null, "Preparing to download submission ID: ${this.submissionId}").toString()
                 Globals.submissionSelectedToDownload = submissionId

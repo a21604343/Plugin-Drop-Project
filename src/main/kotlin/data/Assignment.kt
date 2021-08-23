@@ -31,5 +31,8 @@ data class Assignment(
     val numSubmissions: Int,
     val html: String,
     val lastSubmissionDate: String?,
-    val active: Boolean
+    val active: Boolean,
+    val acceptsStudentTests : Boolean,
+    val minStudentTests : String,
+    val hiddenTestsVisibility : String?
 )

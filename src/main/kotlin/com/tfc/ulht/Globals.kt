@@ -37,15 +37,15 @@ class Globals {
         var user_type = 0
         var taLigado = true
         var selectedAssignmentID: String = ""
-        var submissionSelectedAsFinal = ""
+        var submissionSelectedAsFinal = "" // criar hashmap, key sendo uma classe (id assignement, id group) valor submissão selecionada como final
         var submissionSelectedToDownload = ""
 
 
         var listAssignments : MutableList<Assignment> = ArrayList()
-        var hashSubmissionsByAssignment : HashMap<String,MutableList<Submission>> = hashMapOf()
+        var hashSubmissionsByAssignment : HashMap<String,MutableList<Submission>> = hashMapOf() // chave id Assignment
         var listAssignmentsDP : List<Assignment> = ArrayList()
         var listSubmissionsDP : List<Submission> = ArrayList()
-        var hashSubByGroupId : HashMap<String,MutableList<Submission>> = hashMapOf()
+        var hashSubByGroupId : HashMap<String,MutableList<Submission>> = hashMapOf() // chave GroupID
         var hashAssiSub : HashMap<Assignment,List<Submission>> = HashMap()
     }
 

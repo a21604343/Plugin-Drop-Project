@@ -22,7 +22,8 @@ internal class SubmissionProfessorTableButtonEditor(
     txt: JTextField?,
     private val label: String,
     private val frame: JFrame,
-    private var assignmentID : String
+    private var assignmentID : String,
+    private var assignmentTestsType : String
 ) : DefaultCellEditor(txt) {
     private var button: JButton = JButton(label)
     private var clicked: Boolean = false
@@ -33,6 +34,7 @@ internal class SubmissionProfessorTableButtonEditor(
     private var idGroup: String = ""
     private var tempFileName : String = ""
     private var baseFolder = ""
+    private var reportPosition = 8
 
 
     init {
@@ -52,7 +54,16 @@ internal class SubmissionProfessorTableButtonEditor(
             button.background = table.background
         }
         this.idGroup = table.model.getValueAt(row,0).toString()
-        this.report = table.model.getValueAt(row, 8).toString()
+        when(assignmentTestsType){
+            "0" -> this.report = table.model.getValueAt(row, 8).toString()
+            "1","3" ->{
+                reportPosition = 9
+                this.report = table.model.getValueAt(row, 9).toString()}
+            "2" -> {
+                reportPosition = 10
+                this.report = table.model.getValueAt(row, 10).toString()
+            }
+        }
         this.row = row
         this.column = col
 
@@ -65,12 +76,12 @@ internal class SubmissionProfessorTableButtonEditor(
         if (clicked) {
             if (column == 2) {
                 if(Globals.user_type == 0){
-                    ListSubmissionsHistory("sampleJavaProject",idGroup)
+                    ListSubmissionsHistory(assignmentID,idGroup,assignmentTestsType)
                 }else{
                   //  ListSubmissions(assignmentId)
                 }
             }
-            else if (column == 8) {
+            else if (column == reportPosition) {
                 val ed1 = JEditorPane("text/html", report)
                 ed1.isEditable = false
                 val tempFrame = JFrame("Last Submission Report ")
@@ -79,7 +90,7 @@ internal class SubmissionProfessorTableButtonEditor(
                 tempFrame.setSize(850, 750)
                 tempFrame.isVisible = true
             }
-            else if (column == 9) { // Download LAST
+            else if (column == reportPosition+1) { // Download LAST
                 JOptionPane.showMessageDialog(null, "Preparing to download last submission of group ${this.idGroup}, Sub ID = ${checkLastSubToDownload()}").toString()
                 downloadSubmissao()
                 // var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))

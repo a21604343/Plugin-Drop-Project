@@ -18,21 +18,27 @@
 
 package submissionTable.submissionHistory
 
+import com.tfc.ulht.Globals
 import data.Submission
 import data.Submission_Professor
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.*
 
-class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame() {
+class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmentID : String, assingmentTestsType : String) : JFrame() {
 
-    private var data = Array(submissionListP!!.size) { Array(9) { "" } }
-    private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","Indicators","Time","Report","Mark as Final","Download Submission")
+    //private var data = Array(submissionListP!!.size) { Array(10) { "" } }
+    private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","Time","Report","Mark as Final","Download Submission")
+    private var headersWithStudentTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","StudentTests","Time","Report","Mark as Final","Download Submission")
+    private var headersWithHiddenTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","HiddenTests","Time","Report","Mark as Final","Download Submission")
+    private var headersWithStudentAndHiddenTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","StudentTests","HiddenTests","Time","Report","Mark as Final","Download Submission")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Submissions History")
+    private val assignemntID = assignmentID
     private var reportSub: Int = 6
     private var markAsFinal: Int = 7
     private var download: Int = 8
+    private var acceptStudentTests = false
 
     private var idGroupSubmissionOpen: String = "0"
 
@@ -41,78 +47,199 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
         var summarySplit = summary.split(", Time elapsed: ")
         return summarySplit
     }
+    fun getMinStudentTests() : String{
+        for (assi in Globals.listAssignmentsDP){
+            if (assi.id == assignemntID){
+                println("MinStudentTests: " + assi.minStudentTests)
+            }
+                return assi.minStudentTests
+            }
+        return ""
+        }
+
+
+
 
     init {
-        var iterator = 0
+        lateinit var table : JTable
 
-        if (submissionListP != null) {
-            for (submission in submissionListP) {
-                data[iterator][0] = submission.submissionId.toString()
-                data[iterator][1] = submission.submissionDate.toString()
-                data[iterator][2] = submission.status.toString()
-                data[iterator][3] = submission.markedAsFinal.toString()
-
-                println("TEACHER TESTS : " + submission.teacherTests.toString())
-                println("sTUDENT TESTS : " + submission.studentTests.toString())
-                println("hidden TESTS : " + submission.hiddenTests.toString())
-
-                var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
-                if(summaryTemp.size > 1){
-                    data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
-                    data[iterator][5] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                }else{
-                    data[iterator][4] = submission?.structureErrors.toString()
-                    data[iterator][5] = ""
+        when( assingmentTestsType){
+            "0" -> {
+                var data = Array(submissionListP!!.size) { Array(9) { "" } }
+                table = object : JTable(data, headers) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in 6..8
+                    }
                 }
+                var iterator = 0
+                if (submissionListP != null) {
+                    for (submission in submissionListP) {
 
+                        data[iterator][0] = submission.submissionId.toString()
+                        data[iterator][1] = submission.submissionDate.toString()
+                        data[iterator][2] = submission.status.toString()
+                        data[iterator][3] = submission.markedAsFinal.toString()
 
-                data[iterator][6] = submission.report.toString()
+                        println("TEACHER TESTS : " + submission.teacherTests.toString())
+                        println("sTUDENT TESTS : " + submission.studentTests.toString())
+                        println("hidden TESTS : " + submission.hiddenTests.toString())
 
-                if (submission.coverage == null){
-                    submission.coverage = 0
+                        var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                        if(summaryTemp.size > 1){
+                            data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                            data[iterator][5] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                        }else{
+                            data[iterator][4] = submission?.structureErrors.toString()
+                            data[iterator][5] = ""
+                        }
+                        data[iterator][6] = submission.report.toString()
+                        if (submission.coverage == null){
+                            submission.coverage = 0
+                        }
+
+                        iterator++
+                    }
                 }
-                //data[iterator][7] = submission.isFinal.toString()
-                // data[iterator][8] = submission.downloadLast.toString()
-
-                iterator++
             }
-        }
-        /*
-        if (submissionListP != null) {
-            for (submission in submissionListP) {
-                data[iterator][0] = submission.submissionId.toString()
-                data[iterator][1] = submission.submissionDate.toString()
-                data[iterator][2] = submission.status.toString()
-                data[iterator][3] = submission.markedAsFinal.toString()
-
-                var summaryTemp = getTimeElapsedFromSummary(submission?.summary.toString())
-                if(summaryTemp.size > 1){
-                    data[iterator][4] = getTimeElapsedFromSummary(submission?.summary.toString()).get(0)
-                    data[iterator][5] = getTimeElapsedFromSummary(submission?.summary.toString()).get(1)
-                }else{
-                    // data[iterator][6] = getTimeElapsedFromSummary(submission?.summary.toString()).get(0)
-                    data[iterator][4] = submission?.structureErrors.toString()
-                    data[iterator][5] = ""
+            "1" -> {
+                reportSub = 7
+                markAsFinal= 8
+                download = 9
+                var data = Array(submissionListP!!.size) { Array(10) { "" } }
+                table = object : JTable(data, headersWithStudentTests) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in 7..9
+                    }
                 }
-                data[iterator][6] = submission.report.toString()
+                var iterator = 0
+                if (submissionListP != null) {
+                    for (submission in submissionListP) {
 
-                if (submission.coverage == null){
-                    submission.coverage = 0
+                        data[iterator][0] = submission.submissionId.toString()
+                        data[iterator][1] = submission.submissionDate.toString()
+                        data[iterator][2] = submission.status.toString()
+                        data[iterator][3] = submission.markedAsFinal.toString()
+
+                        println("TEACHER TESTS : " + submission.teacherTests.toString())
+                        println("sTUDENT TESTS : " + submission.studentTests.toString())
+                        println("hidden TESTS : " + submission.hiddenTests.toString())
+
+                        var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                        if(summaryTemp.size > 1){
+                            data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                            data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                        }else{
+                            data[iterator][4] = submission?.structureErrors.toString()
+                            data[iterator][6] = ""
+                        }
+                        if(submission?.studentTests == null){
+                            data[iterator][5] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
+                        }else{
+                            data[iterator][5] = submission?.studentTests.toString()
+                        }
+                        data[iterator][7] = submission.report.toString()
+                        if (submission.coverage == null){
+                            submission.coverage = 0
+                        }
+
+                        iterator++
+                    }
                 }
-                //data[iterator][7] = submission.isFinal.toString()
-               // data[iterator][8] = submission.downloadLast.toString()
-
-                iterator++
             }
+            "2" -> {
+                reportSub = 8
+                markAsFinal= 9
+                download = 10
+                var data = Array(submissionListP!!.size) { Array(11) { "" } }
+                table = object : JTable(data, headersWithStudentAndHiddenTests) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in 8..10
+                    }
+                }
+                var iterator = 0
+                if (submissionListP != null) {
+                    for (submission in submissionListP) {
+
+                        data[iterator][0] = submission.submissionId.toString()
+                        data[iterator][1] = submission.submissionDate.toString()
+                        data[iterator][2] = submission.status.toString()
+                        data[iterator][3] = submission.markedAsFinal.toString()
+
+                        println("TEACHER TESTS : " + submission.teacherTests.toString())
+                        println("sTUDENT TESTS : " + submission.studentTests.toString())
+                        println("hidden TESTS : " + submission.hiddenTests.toString())
+
+                        var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                        if(summaryTemp.size > 1){
+                            data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                            data[iterator][7] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                        }else{
+                            data[iterator][4] = submission?.structureErrors.toString()
+                            data[iterator][7] = ""
+                        }
+                        if(submission.studentTests == null){
+                            data[iterator][5] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
+                        }else{
+                            data[iterator][5] = submission.studentTests.toString()
+                        }
+
+                        data[iterator][6] = submission.hiddenTests.toString()
+                        data[iterator][8] = submission.report.toString()
+                        if (submission.coverage == null){
+                            submission.coverage = 0
+                        }
+
+                        iterator++
+                    }
+                }
+            }
+            "3" -> {
+                reportSub = 7
+                markAsFinal= 8
+                download = 9
+                var data = Array(submissionListP!!.size) { Array(10) { "" } }
+                table = object : JTable(data, headersWithHiddenTests) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in 7..9
+                    }
+                }
+                var iterator = 0
+                if (submissionListP != null) {
+                    for (submission in submissionListP) {
+
+                        data[iterator][0] = submission.submissionId.toString()
+                        data[iterator][1] = submission.submissionDate.toString()
+                        data[iterator][2] = submission.status.toString()
+                        data[iterator][3] = submission.markedAsFinal.toString()
+
+                        println("TEACHER TESTS : " + submission.teacherTests.toString())
+                        println("sTUDENT TESTS : " + submission.studentTests.toString())
+                        println("hidden TESTS : " + submission.hiddenTests.toString())
+
+                        var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                        if(summaryTemp.size > 1){
+                            data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                            data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                        }else{
+                            data[iterator][4] = submission?.structureErrors.toString()
+                            data[iterator][6] = ""
+                        }
+
+                            data[iterator][5] = submission.hiddenTests.toString()
+
+                        data[iterator][7] = submission.report.toString()
+                        if (submission.coverage == null){
+                            submission.coverage = 0
+                        }
+
+                        iterator++
+                    }
+                }
+            }
+
         }
 
-         */
 
-        val table = object : JTable(data, headers) {
-            override fun isCellEditable(row: Int, col: Int): Boolean {
-                return col in 6..8
-            }
-        }
         table.rowHeight = 50
         table.columnModel.getColumn(0).preferredWidth = 40
         table.columnModel.getColumn(1).preferredWidth = 70
@@ -132,14 +259,14 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
          */
         table.columnModel.getColumn(reportSub).cellRenderer =
             SubmissionHistoryTableButtonRenderer("Report")
-        table.columnModel.getColumn(reportSub).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Report", frame)
+        table.columnModel.getColumn(reportSub).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Report", frame,assingmentTestsType)
 
         /**
          * Show report
          */
         table.columnModel.getColumn(markAsFinal).cellRenderer =
             SubmissionHistoryTableButtonRenderer("Mark as Final")
-        table.columnModel.getColumn(markAsFinal).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Final", frame)
+        table.columnModel.getColumn(markAsFinal).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Final", frame,assingmentTestsType)
 
 
         /**
@@ -147,15 +274,15 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?) : JFrame(
          */
         table.columnModel.getColumn(download).cellRenderer =
             SubmissionHistoryTableButtonRenderer("Download")
-        table.columnModel.getColumn(download).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Download", frame)
+        table.columnModel.getColumn(download).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Download", frame,assingmentTestsType)
 
 
         val scrollPane = JScrollPane(table)
-        scrollPane.preferredSize = Dimension(1000, 400)
+        scrollPane.preferredSize = Dimension(1500, 400)
 
         frame.isLocationByPlatform = true
         panel.add(scrollPane, BorderLayout.CENTER)
-        frame.contentPane.preferredSize = Dimension(1000, 400)
+        frame.contentPane.preferredSize = Dimension(1500, 400)
         frame.contentPane.add(panel)
 
         frame.pack()

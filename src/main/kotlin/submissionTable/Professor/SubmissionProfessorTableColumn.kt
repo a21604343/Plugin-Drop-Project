@@ -26,19 +26,26 @@ import java.awt.Dimension
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.util.*
 import javax.swing.*
 
 
 class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignmentID : String) : JFrame() {
 
-    private var data = Array(submissionListP.size) { Array(10) { "" } }
-    private var headers = arrayOf("Group ID", "Name Authors", "Submissions","Nr Submissions", "Last Sub Date", "Status","Indicators","Time","Last Submission Report","Download Last Submission")
+    //private var data = Array(submissionListP.size) { Array(10) { "" } }
+    private var headers = arrayOf("Group ID", "Name Authors", "Submissions","Nr Submissions", "Last Sub Date", "Status","TeacherTests","Time","Last Submission Report","Download Last Submission")
+    private var headersWithStudentTests = arrayOf("Group ID", "Name Authors", "Submissions","Nr Submissions", "Last Sub Date", "Status","TeacherTests","StudentTests","Time","Last Submission Report","Download Last Submission")
+    private var headersWithHiddenTests = arrayOf("Group ID", "Name Authors", "Submissions","Nr Submissions", "Last Sub Date", "Status","TeacherTests","HiddenTests","Time","Last Submission Report","Download Last Submission")
+    private var headersWithStudentAndHiddenTests = arrayOf("Group ID", "Name Authors", "Submissions","Nr Submissions", "Last Sub Date", "Status","TeacherTests","StudentTests","HiddenTests","Time","Last Submission Report","Download Last Submission")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Submissions By Group")
+    private val assignmentId = assignmentID
     private var lastReport: Int = 8
     private var downloadLast: Int = 9
     private val selectSubmission: Int = 2
     private var idGroupSubmissionOpen: String = "0"
+    private var acceptStudentTests = false
+    private var acceptHiddenTests = false
 
     fun getTimeElapsedFromSummary(summary : String) : List<String> {
         var summarySplit = summary.split(", Time elapsed: ")
@@ -50,41 +57,232 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
         return  Globals.hashSubByGroupId.get(groupID)?.size.toString()
     }
 
-    init {
-        val table = object : JTable(data, headers) {
-    }
+    fun checkIfAcceptsTests(assiID : String) {
+        for (assignment in Globals.listAssignmentsDP){
+            if (assignment.id == assiID){
+                if (assignment.acceptsStudentTests){
+                    acceptStudentTests = true
+                }
+                println("hiddenVisibility : " + assignment.hiddenTestsVisibility)
 
-        var iterator  = 0
-        for (submission in submissionListP) {
-            data[iterator][0] = submission?.idGroup.toString()
-            println("id : " + submission?.idGroup)
-            println("idG" + submission?.idGroup)
-            println("grupo: " + submission?.groupAuthors)
-            var prename = submission?.groupAuthors?.split("name=")
-            var name = prename?.get(1)?.split(",")
-            data[iterator][1] = name?.get(0).toString()
-            data[iterator][3] = getnumberSubsByGroup(submission?.idGroup.toString())
-            data[iterator][4] = submission?.submissionDate.toString()
-            if (submission != null) {
-                data[iterator][5] = submission.status
+                if(assignment.hiddenTestsVisibility == "HIDE_EVERYTHING" || assignment.hiddenTestsVisibility == "SHOW_OK_NOK" || assignment.hiddenTestsVisibility == "SHOW_PROGRESS"
+                 ){
+                    acceptHiddenTests = true
+                }
             }
-            var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
-            if(summaryTemp.size > 1){
-                data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
-                data[iterator][7] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                println("STRUCTUREERROS : " + submission?.structureErrors)
-            }else{
-                data[iterator][6] = submission?.structureErrors.toString()
-                data[iterator][7] = ""
-            }
-
-            data[iterator][8] = submission?.report.toString()
-
-            // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
-
-        iterator++
         }
 
+    }
+
+    fun getMinStudentTests() : String{
+        for (assi in Globals.listAssignmentsDP){
+            if (assi.id == assignmentId){
+                return assi.minStudentTests
+            }
+        }
+        return ""
+    }
+
+    fun checkTypeTests () : String{
+        if (acceptStudentTests && acceptHiddenTests){
+            lastReport = 10
+            downloadLast = 11
+            return "2"
+        }else if (acceptStudentTests && !acceptHiddenTests){
+            lastReport = 9
+            downloadLast = 10
+            return "1"
+        }else if(!acceptStudentTests && !acceptHiddenTests){
+            return "0"
+        }else if(!acceptStudentTests && acceptHiddenTests){
+            lastReport = 9
+            downloadLast = 10
+            return "3"
+        }
+        return "-1"
+    }
+    init {
+        lateinit var table : JTable
+        checkIfAcceptsTests(assignmentID)
+        println("checkTests : " + checkTypeTests())
+        var colEditable = arrayOf(2,8,9)
+        when(checkTypeTests() ){
+
+
+            "0" -> {
+                var data = Array(submissionListP.size) { Array(10) { "" } }
+                table = object : JTable(data, headers) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in colEditable
+                    }
+                }
+                var iterator  = 0
+                for (submission in submissionListP) {
+                    data[iterator][0] = submission?.idGroup.toString()
+                    println("id : " + submission?.idGroup)
+                    println("idG" + submission?.idGroup)
+                    println("grupo: " + submission?.groupAuthors)
+                    var prename = submission?.groupAuthors?.split("name=")
+                    var name = prename?.get(1)?.split(",")
+                    data[iterator][1] = name?.get(0).toString()
+                    data[iterator][3] = getnumberSubsByGroup(submission?.idGroup.toString())
+                    data[iterator][4] = submission?.submissionDate.toString()
+                    if (submission != null) {
+                        data[iterator][5] = submission.status
+                    }
+                    var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                    if (summaryTemp.size > 1) {
+                        data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                        data[iterator][7] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                        println("STRUCTUREERROS : " + submission?.structureErrors)
+                    } else {
+                        data[iterator][6] = submission?.structureErrors.toString()
+                        data[iterator][7] = ""
+                    }
+
+                    data[iterator][8] = submission?.report.toString()
+
+                    // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
+
+                    iterator++
+                }
+            }
+            "1" -> {
+                colEditable = arrayOf(2,9,10)
+                var data = Array(submissionListP.size) { Array(11) { "" } }
+                table = object : JTable(data, headersWithStudentTests) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in colEditable
+                    }
+                }
+                var iterator  = 0
+             for (submission in submissionListP) {
+                data[iterator][0] = submission?.idGroup.toString()
+                println("id : " + submission?.idGroup)
+                println("idG" + submission?.idGroup)
+                println("grupo: " + submission?.groupAuthors)
+                var prename = submission?.groupAuthors?.split("name=")
+                var name = prename?.get(1)?.split(",")
+                data[iterator][1] = name?.get(0).toString()
+                data[iterator][3] = getnumberSubsByGroup(submission?.idGroup.toString())
+                data[iterator][4] = submission?.submissionDate.toString()
+                if (submission != null) {
+                    data[iterator][5] = submission.status
+                }
+                var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                if(summaryTemp.size > 1){
+                    data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+
+                    data[iterator][8] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                    println("STRUCTUREERROS : " + submission?.structureErrors)
+                }else{
+                    data[iterator][6] = submission?.structureErrors.toString()
+                    data[iterator][8] = ""
+                }
+                 if(submission?.studentTests == null){
+                     data[iterator][7] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
+                 }else{
+                     data[iterator][7] = submission?.studentTests.toString()
+                 }
+
+
+                data[iterator][9] = submission?.report.toString()
+
+                // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
+                println("ELAPSED TIME : " + submission?.elapsed)
+                iterator++
+            }
+            }
+            "2" ->{
+                colEditable = arrayOf(2,10,11)
+                var data = Array(submissionListP.size) { Array(12) { "" } }
+                table = object : JTable(data, headersWithStudentAndHiddenTests) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in colEditable
+                    }
+                }
+                var iterator  = 0
+                for (submission in submissionListP) {
+                data[iterator][0] = submission?.idGroup.toString()
+                println("id : " + submission?.idGroup)
+                println("idG" + submission?.idGroup)
+                println("grupo: " + submission?.groupAuthors)
+                var prename = submission?.groupAuthors?.split("name=")
+                var name = prename?.get(1)?.split(",")
+                data[iterator][1] = name?.get(0).toString()
+                data[iterator][3] = getnumberSubsByGroup(submission?.idGroup.toString())
+                data[iterator][4] = submission?.submissionDate.toString()
+                if (submission != null) {
+                    data[iterator][5] = submission.status
+                }
+                var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                if(summaryTemp.size > 1){
+                    data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+
+                    data[iterator][9] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                    println("STRUCTUREERROS : " + submission?.structureErrors)
+                }else{
+                    data[iterator][6] = submission?.structureErrors.toString()
+                    data[iterator][9] = ""
+                }
+                    if(submission?.studentTests == null){
+                        data[iterator][7] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
+                    }else{
+                        data[iterator][7] = submission.studentTests.toString()
+                    }
+                data[iterator][8] = submission?.hiddenTests.toString()
+
+                data[iterator][10] = submission?.report.toString()
+
+                // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
+
+                iterator++
+            }}
+            "3" -> {
+                colEditable = arrayOf(2,9,10)
+                var data = Array(submissionListP.size) { Array(11) { "" } }
+                table = object : JTable(data, headersWithHiddenTests) {
+                    override fun isCellEditable(row: Int, col: Int): Boolean {
+                        return col in colEditable
+                    }
+                }
+                var iterator  = 0
+                for (submission in submissionListP) {
+                    data[iterator][0] = submission?.idGroup.toString()
+                    println("id : " + submission?.idGroup)
+                    println("idG" + submission?.idGroup)
+                    println("grupo: " + submission?.groupAuthors)
+                    var prename = submission?.groupAuthors?.split("name=")
+                    var name = prename?.get(1)?.split(",")
+                    data[iterator][1] = name?.get(0).toString()
+                    data[iterator][3] = getnumberSubsByGroup(submission?.idGroup.toString())
+                    data[iterator][4] = submission?.submissionDate.toString()
+                    if (submission != null) {
+                        data[iterator][5] = submission.status
+                    }
+                    var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                    if(summaryTemp.size > 1){
+                        data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+
+                        data[iterator][8] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                        println("STRUCTUREERROS : " + submission?.structureErrors)
+                    }else{
+                        data[iterator][6] = submission?.structureErrors.toString()
+                        data[iterator][8] = ""
+                    }
+
+                        data[iterator][7] = submission?.hiddenTests.toString()
+
+
+
+                    data[iterator][9] = submission?.report.toString()
+
+                    // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
+                    println("ELAPSED TIME : " + submission?.elapsed)
+                    iterator++
+                }
+            }
+        }
 
         fun checkColumnClicked(column : Int){
             when(column){
@@ -126,28 +324,28 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
          */
         table.columnModel.getColumn(selectSubmission).cellRenderer =
             AssignmentTableButtonRenderer("Show")
-        table.columnModel.getColumn(selectSubmission).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Show Submissions", frame,assignmentID)
+        table.columnModel.getColumn(selectSubmission).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Show Submissions", frame,assignmentID,checkTypeTests())
 
         /**
         * Show sub report
         */
         table.columnModel.getColumn(lastReport).cellRenderer =
             AssignmentTableButtonRenderer("Show")
-        table.columnModel.getColumn(lastReport).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Submission Report", frame,assignmentID)
+        table.columnModel.getColumn(lastReport).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Submission Report", frame,assignmentID,checkTypeTests())
         /**
         * Download Last
         */
         table.columnModel.getColumn(downloadLast).cellRenderer =
             AssignmentTableButtonRenderer("Download")
-        table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Download last Submission", frame,assignmentID)
+        table.columnModel.getColumn(downloadLast).cellEditor = SubmissionProfessorTableButtonEditor(JTextField(), "Download last Submission", frame,assignmentID,checkTypeTests())
 
 
         val scrollPane = JScrollPane(table)
-        scrollPane.preferredSize = Dimension(1200, 400)
+        scrollPane.preferredSize = Dimension(1750, 400)
 
         frame.isLocationByPlatform = true
         panel.add(scrollPane, BorderLayout.CENTER)
-        frame.contentPane.preferredSize = Dimension(1200, 400)
+        frame.contentPane.preferredSize = Dimension(1750, 400)
         frame.contentPane.add(panel)
 
         frame.pack()

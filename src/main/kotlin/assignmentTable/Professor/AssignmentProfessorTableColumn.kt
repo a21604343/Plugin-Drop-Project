@@ -54,20 +54,11 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             }else{
                 var size = Globals.hashSubmissionsByAssignment.get(idString)?.size
                 if (size != null) {
-                    println("subdate :" + Globals.hashSubmissionsByAssignment.get(idString)?.get(size-1)?.submissionDate.toString())
+
                     data[iterator][2] = Globals.hashSubmissionsByAssignment.get(idString)?.get(size-1)?.submissionDate.toString()
                 }
             }
-            /*
-            if (!assignment.lastSubmissionDate.isNullOrEmpty()) {
-                data[iterator][2] = assignment.lastSubmissionDate.toString()
-            } else {
-                data[iterator][2] = "No Submissions Yet"
-            }
-            */
             var numberSubsByGroup = Globals.hashSubmissionsByAssignment.get(assignment.id)?.size
-
-
             if(numberSubsByGroup == null){
                 numberSubsByGroup = 0
             }
@@ -77,21 +68,6 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             subsTotal = assignment.numSubmissions.toString()
             data[iterator][7] = assignment.active.toString()
         }
-         // Arranjar solução para mostar numero de subs por assignment, problema: atualiza a coluna toda de uma só vez
-            /**
-             * Show list of submissionsGroup
-
-            var numberSubsByGroup1 = Globals.hashSubmissionsByAssignment.get(assignment.id)?.size
-
-
-            if(numberSubsByGroup1 == null){
-                numberSubsByGroup1 = 0
-            }
-            table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
-                AssignmentProfessorTableButtonRenderer("${numberSubsByGroup1}")
-            table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
-            */
-
 
 
         val table = object : JTable(data, headers) {

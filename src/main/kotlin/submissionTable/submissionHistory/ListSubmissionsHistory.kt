@@ -1,20 +1,18 @@
 package submissionTable.submissionHistory
 
-import assignmentTable.SubmissionProfessorTableColumn
 import assignmentTable.SubmissionTableColumn
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.tfc.ulht.Globals
 import com.tfc.ulht.loginComponents.Authentication
-import data.Indicadores
 import data.Submission
 import data.Submission_Professor
 import okhttp3.Request
 import java.lang.reflect.Type
 
 
-class ListSubmissionsHistory(assignmentId : String, GroupId: String) {
+class ListSubmissionsHistory(assignmentId : String, GroupId: String, assignmentTestsType : String) {
         companion object {
             var selectedSubmission: String = ""
         }
@@ -26,6 +24,8 @@ class ListSubmissionsHistory(assignmentId : String, GroupId: String) {
         private val REQUEST_URL = "${Globals.REQUEST_URL}/submissions/?assignmentId=${assignmentId}&groupId=${GroupId}"
         private var submissionList = listOf<Submission>()
         private val moshi = Moshi.Builder().build()
+        private val assignmentID = assignmentId
+        private val assignmentTestsType = assignmentTestsType
         private val submissionProfessorJsonAdapter: JsonAdapter<List<Submission_Professor>> = moshi.adapter(type)
         private val submissionJsonAdapter: JsonAdapter<List<Submission>> = moshi.adapter(type)
 
@@ -52,7 +52,7 @@ class ListSubmissionsHistory(assignmentId : String, GroupId: String) {
         private fun showSubmissionList() {
 
             if(Globals.user_type == 0){
-                SubmissionHistoryTableColumn(submissionList)
+                SubmissionHistoryTableColumn(submissionList,assignmentID,assignmentTestsType)
             }else{
                 SubmissionTableColumn(submissionList)
             }
