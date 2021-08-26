@@ -11,8 +11,10 @@ import java.util.*
 class FileDownloader(private val client: OkHttpClient, writer: FileWriter) : AutoCloseable {
     private val writer: FileWriter
     @Throws(IOException::class)
-    fun download(url: String?): Long {
-        val request = Request.Builder().url(url).build()
+    fun download(url: String): Long {
+        val request = Request.Builder()
+                        .url(url)
+                        .build()
         val response = client.newCall(request).execute()
         val responseBody = response.body() ?: throw IllegalStateException("Response doesn't contain a file")
         val length = Objects.requireNonNull(response.header(CONTENT_LENGTH, "1"))!!

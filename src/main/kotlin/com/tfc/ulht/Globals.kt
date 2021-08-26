@@ -34,13 +34,19 @@ class Globals {
         var choosenRow: Int = 0
         var choosenColumn: Int = 0
 
+        //Tipos de Acesso
         var user_type = 0
         var taLigado = true
+
         var selectedAssignmentID: String = ""
         var submissionSelectedAsFinal = "" // criar hashmap, key sendo uma classe (id assignement, id group) valor submissão selecionada como final
         var submissionSelectedToDownload = ""
 
+        //Config
+        var pathToDownloadAndUnZip = "C:\\Users\\Diogo Casaca\\testeSubTFC\\"
 
+
+        // Armazenar e manipular dados
         var listAssignments : MutableList<Assignment> = ArrayList()
         var hashSubmissionsByAssignment : HashMap<String,MutableList<Submission>> = hashMapOf() // chave id Assignment
         var listAssignmentsDP : List<Assignment> = ArrayList()

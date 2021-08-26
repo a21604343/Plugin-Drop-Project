@@ -13,16 +13,11 @@ import java.awt.Component
 
 import java.io.*
 import java.net.MalformedURLException
-import java.net.URL
 
-import java.nio.file.Files
-
-import java.nio.file.Paths
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-import javax.net.ssl.HttpsURLConnection
 import kotlin.random.Random
 
 
@@ -127,8 +122,12 @@ internal class SubmissionHistoryTableButtonEditor(
     fun downloadSubmissao() {
         try {
             val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + Globals.submissionSelectedToDownload
-            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000) // adaptar com rand, para multiplas aberturas
-            tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            var filename = "DownloadedSubmissionID_" + Globals.submissionSelectedToDownload + "_"
+            //baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000)
+            //tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\filename" + rand(0,1000) + ".zip"
+            var nameUnzipped = "unzipped_" + Globals.submissionSelectedToDownload + "_"
+            baseFolder = Globals.pathToDownloadAndUnZip + nameUnzipped + rand(0,1000)
+            tempFileName = Globals.pathToDownloadAndUnZip + filename + rand(0,1000) + ".zip"
             var ficheiroDestino : OutputStream = FileOutputStream(tempFileName)
             var downloader = FileDownloader(Authentication.httpClient, FileWriter(ficheiroDestino))
             downloader.download(urlToAutenticate)

@@ -10,7 +10,6 @@ import submissionTable.submissionHistory.ListSubmissionsHistory
 import java.awt.Component
 import java.io.*
 import java.net.MalformedURLException
-import java.net.URL
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
@@ -117,10 +116,12 @@ internal class SubmissionProfessorTableButtonEditor(
     fun downloadSubmissao() {
         try {
             //val url = URL("https://github.com/brunompc/aula-15-exceptions/archive/refs/heads/master.zip")
-             //val url = URL("http://localhost:8080/downloadOriginalProject/46")
-            val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + Globals.submissionSelectedToDownload
-            baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000)
-            tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\file_name" + rand(0,1000) + ".zip"
+            //val urlToAutenticate = "http://localhost:8080/downloadOriginalProject/46"
+             val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + Globals.submissionSelectedToDownload
+            var filename = "DownloadedSubmissionID_" + Globals.submissionSelectedToDownload + "_"
+            var nameUnzipped = "unzipped_" + Globals.submissionSelectedToDownload + "_"
+            baseFolder = Globals.pathToDownloadAndUnZip + nameUnzipped + rand(0,1000)
+            tempFileName = Globals.pathToDownloadAndUnZip + filename + rand(0,1000) + ".zip"
             var ficheiroDestino : OutputStream = FileOutputStream(tempFileName)
             var downloader = FileDownloader(Authentication.httpClient,com.tfc.ulht.download.FileWriter(ficheiroDestino))
             downloader.download(urlToAutenticate)
