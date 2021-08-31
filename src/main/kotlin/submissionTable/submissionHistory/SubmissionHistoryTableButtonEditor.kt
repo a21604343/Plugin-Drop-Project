@@ -92,7 +92,7 @@ internal class SubmissionHistoryTableButtonEditor(
                 val tempFrame = JFrame("Submission Report")
                 tempFrame.add(ed1)
                 tempFrame.isLocationByPlatform = true
-                tempFrame.setSize(850, 750)
+                tempFrame.setSize(850, 1000)
                 tempFrame.isVisible = true
             }
             else if (column == reportPosition+1){
@@ -116,6 +116,9 @@ internal class SubmissionHistoryTableButtonEditor(
             }
         }
         clicked = false
+        if(column == reportPosition){
+            return submissionReport
+        }
         return label
     }
 

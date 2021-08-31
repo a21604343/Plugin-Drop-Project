@@ -67,20 +67,33 @@ class ListSubmissions(val assignmentId: String) {
 
 
     fun createReport(submissao : Submission) : String{
+        var pUnitTestsVerification = true
+        if(submissao.structureErrors != "null"){
+            pUnitTestsVerification = false
+        }
         var authors = submissao.groupAuthors?.split("name=")
+        var authorsUserId = submissao.groupAuthors?.split("userId=")
         var isGroup = false
         var auth1 : String
         var auth2 : String
+        var authID1 : String
+        var authID2 : String
         if(authors.size > 2){
             isGroup = true
+            var getAuthID1 = authorsUserId.get(1).split(",")
+            authID1 = getAuthID1.get(0).replace(")","")
+            var getAuthID2 = authorsUserId.get(2).split(",")
+            authID2 = getAuthID2.get(0).replace(")]","")
             val auths = authors.get(1).split(",")
             val auths2 = authors.get(2).split(",")
              auth1 = auths.get(0)
              auth2 = auths2.get(0)
         }else{
-            val auths = authors.get(1).split(",")
-            auth1 = auths.get(0)
+            authID1 = authorsUserId.get(1).replace(")]","")
+            val auth = authors.get(1).split(",")
+            auth1 = auth.get(0)
             auth2 = ""
+            authID2 = ""
         }
         println("report-- ${submissao.groupAuthors}")
         var report = "<html>" +
@@ -102,26 +115,26 @@ class ListSubmissions(val assignmentId: String) {
 
 
         if (isGroup){
-            report += "<span>${auth1}</span>"+
+            report += "<span>${authID1}</span>"+
 
                     "<span class=\"label label-primary\"> <b>Submitter</b></span>"+
                     " </td>"+
-                    "<td>Student 1</td>"+
+                    "<td>${auth1}</td>"+
                     "</tr>"+
                     "<tr>"+
                     "<td>"+
-                    "<span>${auth2}</span>"+
+                    "<span>${authID2}</span>"+
                     "</td"+
-                    "<td> Student 2 </td>"+
+                    "<td> ${auth2} </td>"+
                     "<tr>"+
                     "</tbody>"+
                     "</table>"
         }else{
-            report += "<span>${auth1}</span>"+
+            report += "<span>${authID1}</span>"+
 
                     "<span class=\"label label-primary\"> <b>Submitter</b></span>"+
                     " </td>"+
-                    "<td>Student 1</td>"+
+                    "<td>${auth1}</td>"+
                     "</tr>"+
                     "<tr>"+
                     "<td>"
@@ -134,32 +147,41 @@ class ListSubmissions(val assignmentId: String) {
         "<td>"+
         "<span>Project Structure</span>"+
         "</td>"+
-        "<td>"+
-        "<!--<img src=\"../img/if_sign-check_299110.png\"> -->"+
+        "<td>"
 
-
-        "</td>"+
-
+                if (pUnitTestsVerification){
+           report += "<img src=\"https://static6.depositphotos.com/1080758/571/v/600/depositphotos_5713103-stock-illustration-answer22.jpg\" width=\"40\" height=\"40\" >"
+                }else {
+                    report += "<img src=\"https://www.smartia.com.br/blog/wp-content/uploads/2015/05/errado.png\" width=\"40\" height=\"40\" >"
+                }
+        //"<!--<img src=\"../img/if_sign-check_299110.png\"> -->"+
+        report += "</td>"+
        " </tr>"+
         "<tr>"+
         "<td>"+
         "<span>Compilation</span>"+
-
         "</td>"+
-        "<td>"+
-        "<!--<img src=\"../img/if_sign-check_299110.png\">-->"+
+        "<td>"
+                if (pUnitTestsVerification){
+                    report += "<img src=\"https://static6.depositphotos.com/1080758/571/v/600/depositphotos_5713103-stock-illustration-answer22.jpg\" width=\"40\" height=\"40\" >"
+                }else {
+                    report += "<img src=\"https://www.smartia.com.br/blog/wp-content/uploads/2015/05/errado.png\" width=\"40\" height=\"40\" >"
+                }
 
-        "</td>"+
 
-        "</tr>"+
+        report += "</tr>"+
         "<tr>"+
         "<td>"+
         "<span>Code Quality (Checkstyle)</span>"+
-
         "</td>"+
-        "<td>"+
-        "<!--<img src=\"../img/if_sign-check_299110.png\"> -->"+
-        "<br>"+
+        "<td>"
+                if (pUnitTestsVerification){
+                    report += "<img src=\"https://static6.depositphotos.com/1080758/571/v/600/depositphotos_5713103-stock-illustration-answer22.jpg\" width=\"40\" height=\"40\" >"
+                }else {
+                    report += "<img src=\"https://www.smartia.com.br/blog/wp-content/uploads/2015/05/errado.png\" width=\"40\" height=\"40\" >"
+                }
+
+        report += "<br>"+
         "</td>"+
         "</tr>"+
         "<tr>"+
@@ -169,6 +191,7 @@ class ListSubmissions(val assignmentId: String) {
         "</td>"+
         "<td>"+
         "<h4 style=\"margin-top: 3px\">"+
+                "<span class=\"label label-success\">${getScoreFromTests(submissao,"st")}</span>"+
 //"<span class=\"label label-success\">${submissao.studentTests}</span>"+
  "</h4>"+
  "</td>"+
@@ -180,7 +203,7 @@ class ListSubmissions(val assignmentId: String) {
          "</td>"+
          "<td>"+
          "<h4 style=\"margin-top: 3px\">"+
-                     "<span class=\"label label-success\">${getScoreFromTests(submissao)}</span>"+
+                     "<span class=\"label label-success\">${getScoreFromTests(submissao,"tt")}</span>"+
          "</h4>"+
          "</td>"+
          "</tr>"+
@@ -191,6 +214,7 @@ class ListSubmissions(val assignmentId: String) {
          "</td>"+
          "<td>"+
          "<h4 style=\"margin-top: 3px\">"+
+                "<span class=\"label label-success\">${getScoreFromTests(submissao,"htt")}</span>"+
                 // "<span class=\"label label-success\">${submissao.hiddenTests}</span>"+
          "</h4>"+
          "</td>"+
@@ -212,7 +236,7 @@ class ListSubmissions(val assignmentId: String) {
  "<table class=\"table table-bordered\">"+
  "<thead>"+
  "<tr>"+
- "<th>JUnit Summary (Teacher Tests)</th>"+
+ "<th>JUnit Summary (Tests)</th>"+
  "</tr>"+
  "</thead>"+
  "<tbody>"
@@ -227,14 +251,20 @@ class ListSubmissions(val assignmentId: String) {
         }
 
 
-
-
- report += "<tr>"+
- "<td>${submissao.teacherTests}</td>"+
- "</tr>"+
-
-
-" </table>"+
+      report +=  "<tr>"+
+                "<td>TeacherTests : ${submissao.teacherTests}</td>"+
+                "</tr>"
+if(submissao.studentTests != null ){
+    report += "<tr>"+
+            "<td> StudentTests : ${submissao.studentTests}</td>"+
+            "</tr>"
+}
+    if(submissao.hiddenTests != null){
+    report += "<tr>"+
+            "<td>TeacherHiddentTests : ${submissao.hiddenTests}</td>"+
+            "</tr>"
+}
+   report +=" </table>"+
  "<br>"+
 
 " </div>"+
@@ -245,11 +275,22 @@ class ListSubmissions(val assignmentId: String) {
 
 }
 
-    fun getScoreFromTests(Sub : Submission) : String{
-        val testsSplited = Sub.teacherTests?.split(" ")
+    fun getScoreFromTests(Sub : Submission, testType : String) : String{
+        var testsSplited : List<String>?
+        when(testType){
+            "tt" -> testsSplited = Sub.teacherTests?.split(" ")
+            "htt" -> testsSplited = Sub.hiddenTests?.split(" ")
+            "st" -> testsSplited = Sub.studentTests?.split(" ")
+            else -> testsSplited = Sub.teacherTests?.split(" ")
+        }
+
 
         var result = testsSplited?.get(2)?.get(0)?.toInt()?.minus(testsSplited.get(4).get(0).toInt()).toString()
             result += "/${testsSplited?.get(2)?.get(0).toString()}"
+
+        if(result.contains("null")){
+            result = "0/0"
+        }
         return result
     }
 

@@ -86,7 +86,7 @@ internal class SubmissionProfessorTableButtonEditor(
                 val tempFrame = JFrame("Last Submission Report ")
                 tempFrame.add(ed1)
                 tempFrame.isLocationByPlatform = true
-                tempFrame.setSize(850, 750)
+                tempFrame.setSize(850, 1000)
                 tempFrame.isVisible = true
             }
             else if (column == reportPosition+1) { // Download LAST
@@ -101,6 +101,9 @@ internal class SubmissionProfessorTableButtonEditor(
             }
         }
         clicked = false
+        if(column == reportPosition){
+            return report
+        }
         return label
     }
 
