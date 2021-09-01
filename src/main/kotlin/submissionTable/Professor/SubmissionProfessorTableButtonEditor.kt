@@ -91,13 +91,14 @@ internal class SubmissionProfessorTableButtonEditor(
             }
             else if (column == reportPosition+1) { // Download LAST
                 JOptionPane.showMessageDialog(null, "Preparing to download last submission of group ${this.idGroup}, Sub ID = ${checkLastSubToDownload()}").toString()
+                Globals.submissionSelectedToDownload = checkLastSubToDownload()
                 downloadSubmissao()
                 // var f = FastOpener.adjust(File("C:\\Users\\Diogo Casaca\\testeSubTFC\\exemploProf"))
                 var f = FastOpener.adjust(File(baseFolder))
                 if(f != null){
                     ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
                 }
-                Globals.submissionSelectedToDownload = checkLastSubToDownload()
+
             }
         }
         clicked = false
