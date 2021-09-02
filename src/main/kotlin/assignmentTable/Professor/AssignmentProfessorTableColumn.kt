@@ -18,21 +18,30 @@
 
 package assignmentTable.Professor
 
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.tfc.ulht.Globals
+import com.tfc.ulht.loginComponents.Authentication
 import data.Assignment
-import data.Assignment_Professor
+import data.Submission
+import okhttp3.Request
 import java.awt.BorderLayout
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.lang.reflect.Type
 import java.util.*
 import javax.swing.*
+import javax.swing.table.DefaultTableCellRenderer
+
 
 class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame() {
 
     private var data = Array(assignmentList.size) { Array(9) { "" } }
-    private var headers = arrayOf("Assignment ID", "Name", "Last Submission Date","Submissions By Group","Nr Submissions","Assignemnt Details","","Active?")
+    private var headers = arrayOf("Assignment ID", "Name", "Last Submission \n Date","Submissions By Group","Nr Submissions","Assignemnt Details","","Active?")
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Available Assignments")
     private val listSubmissionsButton: Int = 3
@@ -44,11 +53,40 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
 
     init {
 
+        fun testRequestForUpdateNumSubmissions (assiID : String, typeReturn : String) : String{
+            var type: java.lang.reflect.Type = Types.newParameterizedType(
+                List::class.java,
+                Submission::class.java
+            )
+             val REQUEST_URL = "${Globals.REQUEST_URL}/api/v1/submissionsList"
+             var submissionList = listOf<Submission>()
+             val moshi = Moshi.Builder().build()
+             val submissionJsonAdapter: JsonAdapter<List<Submission>> = moshi.adapter(type)
+            val request = Request.Builder()
+                .url("$REQUEST_URL/$assiID")
+                .build()
+
+            Authentication.httpClient.newCall(request).execute().use { response ->
+                submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
+
+
+            }
+            if (typeReturn.equals("2")){
+                return submissionList.size.toString()
+            }else{
+                return submissionList.get(submissionList.size-1).submissionDate.toString()
+            }
+
+
+        }
+
 
         for ((iterator, assignment) in assignmentList.withIndex()) {
             data[iterator][0] = assignment.id
             data[iterator][1] = assignment.name
             val idString : String = assignment.id
+            data[iterator][2] = testRequestForUpdateNumSubmissions(assignment.id,"1")
+            /*
             if(Globals.hashSubmissionsByAssignment.get(idString)?.size == 0){
                 data[iterator][2] = "No Submissions Yet"
             }else{
@@ -58,12 +96,14 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
                     data[iterator][2] = Globals.hashSubmissionsByAssignment.get(idString)?.get(size-1)?.submissionDate.toString()
                 }
             }
+
+             */
             var numberSubsByGroup = Globals.hashSubmissionsByAssignment.get(assignment.id)?.size
             if(numberSubsByGroup == null){
                 numberSubsByGroup = 0
             }
-            data[iterator][4] = numberSubsByGroup.toString()
-            println("HTML CHECK : " + assignment.html)
+            //data[iterator][4] = numberSubsByGroup.toString()
+            data[iterator][4] = testRequestForUpdateNumSubmissions(assignment.id,"2")
             data[iterator][5] = assignment.html
             subsTotal = assignment.numSubmissions.toString()
             data[iterator][7] = assignment.active.toString()
@@ -71,10 +111,47 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
 
 
         val table = object : JTable(data, headers) {
+
             override fun isCellEditable(row: Int, col: Int): Boolean {
                 return col in 3..6
             }
         }
+        // tamanho headers
+        table.tableHeader.setSize(75,50)
+        class txtIcon(var txt: String, var imageIcon: ImageIcon)
+
+        class iconRenderer : DefaultTableCellRenderer() {
+            override fun getTableCellRendererComponent(
+                table: JTable,
+                obj: Any, isSelected: Boolean, hasFocus: Boolean, row: Int,
+                column: Int
+            ): Component {
+                val i: txtIcon = obj as txtIcon
+                if (obj === i) {
+                    icon = i.imageIcon
+                    text = i.txt
+                }
+                border = UIManager.getBorder("TableHeader.cellBorder")
+                horizontalAlignment = CENTER
+                return this
+            }
+        }
+
+        fun SetIcon( table : JTable,  col_index : Int,  icon : ImageIcon, name : String){
+            table.tableHeader.columnModel.getColumn(col_index).headerRenderer
+            (iconRenderer());
+            table.columnModel.getColumn(col_index).headerValue = txtIcon(name, icon);
+        }
+        //var imageOne = ImageIcon("https://tenor.com/view/down-arrow-symbols-joypixels-arrow-down-cardinal-gif-17524105")
+
+        var imageOne = ImageIcon("C:\\Users\\Diogo Casaca\\Pictures\\down-arrow-symbols.gif")
+        println()
+
+        SetIcon(table,0,imageOne,"")
+
+
+
+
 
 
         fun checkColumnClicked(column : Int){
@@ -89,7 +166,11 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             }
         }
 
-        frame.getContentPane().add(table.getTableHeader())
+
+
+
+
+        frame.getContentPane().add(table.tableHeader)
         table.getTableHeader().addMouseListener(object : MouseAdapter(){
 
             override fun mouseClicked (event : MouseEvent){
@@ -101,6 +182,8 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         })
         table.columnModel.getColumn(6).preferredWidth = 75
         table.rowHeight = 30
+       //table.tableHeader.setSize(75,50)
+
         //table.removeColumn(table.columnModel.getColumn(3))
 
 
@@ -133,7 +216,10 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         frame.preferredSize = Dimension(1200, 400)
         frame.contentPane.add(panel)
 
+
         frame.pack()
         frame.isVisible = true
     }
 }
+
+

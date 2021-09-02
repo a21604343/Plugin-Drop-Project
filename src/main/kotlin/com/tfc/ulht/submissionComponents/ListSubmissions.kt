@@ -185,20 +185,21 @@ class ListSubmissions(val assignmentId: String) {
         "</td>"+
         "</tr>"+
         "<tr>"+
-        "<td>"+
-        "<span>Student Unit Tests</span>"+
+        "<td>"
+        if(submissao.studentTests != null ){
+        report += "<span>Student Unit Tests</span>"+
         "<br>"+
         "</td>"+
         "<td>"+
-        "<h4 style=\"margin-top: 3px\">"+
-                "<span class=\"label label-success\">${getScoreFromTests(submissao,"st")}</span>"+
-//"<span class=\"label label-success\">${submissao.studentTests}</span>"+
- "</h4>"+
- "</td>"+
- "</tr>"+
+        "<h4 style=\"margin-top: 3px\">"+ "<span class=\"label label-success\">${getScoreFromTests(submissao,"st")}</span>"+
+        //"<span class=\"label label-success\">${submissao.studentTests}</span>"+
+         "</h4>"+
+         "</td>"+
+         "</tr>"+
          "<tr>"+
-         "<td>"+
-         "<span>Teacher Unit Tests</span>"+
+         "<td>"
+         }
+        report += "<span>Teacher Unit Tests</span>"+
          "<br>"+
          "</td>"+
          "<td>"+
@@ -206,9 +207,11 @@ class ListSubmissions(val assignmentId: String) {
                      "<span class=\"label label-success\">${getScoreFromTests(submissao,"tt")}</span>"+
          "</h4>"+
          "</td>"+
-         "</tr>"+
+         "</tr>"
+                if(submissao.hiddenTests != null ){
+            report +=
          "<tr>"+
-         "<td>"+
+         "<td>" +
          "<span>Teacher Hidden Unit Tests</span>"+
          "<br>"+
          "</td>"+
@@ -218,8 +221,10 @@ class ListSubmissions(val assignmentId: String) {
                 // "<span class=\"label label-success\">${submissao.hiddenTests}</span>"+
          "</h4>"+
          "</td>"+
-         "</tr>"+
- "</tbody>"+
+         "</tr>"
+                }
+
+ report += "</tbody>"+
  "</table>"+
  "<br>"+
 " <!--<table class=\"table table-bordered\" -->"+
