@@ -28,7 +28,7 @@ import data.Submission
 class Globals {
 
     companion object {
-        val REQUEST_URL = "http://127.0.0.1:8080"  //"https://drop-project-fork.herokuapp.com"
+        val REQUEST_URL =  "http://127.0.0.1:8080" // "https://plugindropproject.herokuapp.com"
         val PLUGIN_ID = PluginStatusWidget::class.java.name
 
         var choosenRow: Int = 0
@@ -42,6 +42,7 @@ class Globals {
         var submissionSelectedAsFinal = "" // criar hashmap, key sendo uma classe (id assignement, id group) valor submissão selecionada como final
         var submissionSelectedToDownload = ""
 
+
         //Config
         var pathToDownloadAndUnZip = "C:\\Users\\Diogo Casaca\\testeSubTFC\\"
 
@@ -53,6 +54,7 @@ class Globals {
         var listSubmissionsDP : List<Submission> = ArrayList()
         var hashSubByGroupId : HashMap<String,MutableList<Submission>> = hashMapOf() // chave GroupID
         var hashAssiSub : HashMap<Assignment,List<Submission>> = HashMap()
+        var sortedOnce : String = "0" // 0 = initial mode / 1 = Decrescente / 2 = Crescente
     }
 
 }

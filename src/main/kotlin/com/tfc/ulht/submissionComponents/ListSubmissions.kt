@@ -208,7 +208,7 @@ class ListSubmissions(val assignmentId: String) {
          "</h4>"+
          "</td>"+
          "</tr>"
-                if(submissao.hiddenTests != null ){
+                if(submissao.hiddenTests != null /*&& submissao.structureErrors != "null" */ ){
             report +=
          "<tr>"+
          "<td>" +
@@ -286,17 +286,21 @@ if(submissao.studentTests != null ){
             "tt" -> testsSplited = Sub.teacherTests?.split(" ")
             "htt" -> testsSplited = Sub.hiddenTests?.split(" ")
             "st" -> testsSplited = Sub.studentTests?.split(" ")
-            else -> testsSplited = Sub.teacherTests?.split(" ")
+            else -> testsSplited = null
         }
 
+        if(testsSplited != null) {
+            if(testsSplited.size >= 3) {
+                var result = testsSplited?.get(2)?.get(0)?.toInt()?.minus(testsSplited.get(4).get(0).toInt()).toString()
+                result += "/${testsSplited?.get(2)?.get(0).toString()}"
 
-        var result = testsSplited?.get(2)?.get(0)?.toInt()?.minus(testsSplited.get(4).get(0).toInt()).toString()
-            result += "/${testsSplited?.get(2)?.get(0).toString()}"
-
-        if(result.contains("null")){
-            result = "0/0"
+                if (result.contains("null")) {
+                    result = "0/0"
+                }
+                return result
+            }
         }
-        return result
+        return ""
     }
 
     fun updateAllReports(listaSubs : List<Submission>){
@@ -384,7 +388,9 @@ init {
 private fun showSubmissionList(listSubmissions : List<Submission?>) {
 
  if(Globals.user_type == 0){
+     Globals.sortedOnce = "0"
      SubmissionProfessorTableColumn(listSubmissions,assignmentID)
+
  }else{
      SubmissionTableColumn(submissionList)
  }

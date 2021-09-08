@@ -26,8 +26,9 @@ import java.awt.Dimension
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.*
 import javax.swing.*
+import com.tfc.ulht.QuickSort
+import submissionTable.submissionHistory.SubmissionHistoryTableColumn
 
 
 class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignmentID : String) : JFrame() {
@@ -46,6 +47,9 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
     private var idGroupSubmissionOpen: String = "0"
     private var acceptStudentTests = false
     private var acceptHiddenTests = false
+    private var listPerNumberSubs = mutableListOf<String>()
+    private var listPerIdSubs = mutableListOf<String>()
+
 
     fun getTimeElapsedFromSummary(summary : String) : List<String> {
         var summarySplit = summary.split(", Time elapsed: ")
@@ -101,6 +105,33 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
         }
         return "-1"
     }
+
+    fun inversePerNumSubmissions(){
+        listPerNumberSubs.clear()
+        listPerIdSubs.clear()
+        for ( lista in Globals.hashSubByGroupId.keys){
+            listPerNumberSubs.add(Globals.hashSubByGroupId.get(lista)?.size.toString())
+            listPerIdSubs.add(lista)
+        }
+    }
+
+    fun unitListByGroup(lista: List<String>): List<Submission> {
+        var finalList = mutableListOf<Submission?>()
+        for (idTemp in lista) {
+            for (id in Globals.hashSubByGroupId.keys) {
+
+                if (id == idTemp) {
+                    var size = Globals.hashSubByGroupId.get(id)?.size
+                    if (size != null) {
+                        finalList.add(Globals.hashSubByGroupId.get(id)?.get(size - 1))
+                    }
+                }
+            }
+        }
+        return finalList as List<Submission>
+
+    }
+
     init {
         lateinit var table : JTable
         checkIfAcceptsTests(assignmentID)
@@ -287,10 +318,42 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
         fun checkColumnClicked(column : Int){
             when(column){
                 0 -> {
+
                     frame.isVisible = false
-                    Globals.listAssignments.reverse()
+                    var sortedID2 = QuickSort()
+                    var listaTemp = sortedID2.sortDataID(submissionListP as MutableList<Submission>,0,submissionListP.size.minus(1))
+                    SubmissionProfessorTableColumn(listaTemp, assignmentID)
+
+
+
                 }
-                2 -> print("tamos ai")
+                3 -> {
+
+                    frame.isVisible = false
+                inversePerNumSubmissions()
+                var sortedList = QuickSort()
+                    var lista = sortedList.sortData(listPerNumberSubs,listPerIdSubs,0,listPerNumberSubs.size.minus(1))
+
+                    when(Globals.sortedOnce){
+                        "1" -> {
+                            lista.reverse()
+                            Globals.sortedOnce = "2"
+                            SubmissionProfessorTableColumn(unitListByGroup(lista),assignmentID)
+                        }
+                        "0" -> {
+                            Globals.sortedOnce = "1"
+                            SubmissionProfessorTableColumn(unitListByGroup(lista),assignmentID)
+                        }
+                        "2" -> {
+                            Globals.sortedOnce = "1"
+                            SubmissionProfessorTableColumn(unitListByGroup(lista),assignmentID)
+                        }
+                    }
+
+
+
+
+                }
                 else -> "Erro"
             }
         }

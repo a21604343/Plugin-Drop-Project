@@ -18,11 +18,16 @@
 
 package submissionTable.submissionHistory
 
+import assignmentTable.SubmissionProfessorTableColumn
 import com.tfc.ulht.Globals
+import com.tfc.ulht.QuickSort
 import data.Submission
 import data.Submission_Professor
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.Point
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.*
 
 class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmentID : String, assingmentTestsType : String) : JFrame() {
@@ -238,6 +243,37 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
             }
 
         }
+
+        fun checkColumnClicked(column : Int){
+            when(column){
+                0 ->{
+                    frame.isVisible = false
+                    var sortedID = QuickSort()
+                    var listaTemp = sortedID.sortDataID(submissionListP as MutableList<Submission>,0,submissionListP.size.minus(1))
+
+                    SubmissionHistoryTableColumn(listaTemp, assignmentID,assingmentTestsType)
+                }
+                1 -> {
+                    frame.isVisible = false
+                    var listTemp = submissionListP?.reversed()
+                    if (listTemp != null) {
+                        SubmissionHistoryTableColumn(listTemp, assignmentID,assingmentTestsType)
+                    }
+                }
+                2 -> print("tamos ai")
+                else -> "Erro"
+            }
+        }
+        table.getTableHeader().addMouseListener(object : MouseAdapter(){
+
+            override fun mouseClicked (event : MouseEvent){
+                var point : Point = event.getPoint()
+                var column : Int = table.columnAtPoint(point)
+                print(column)
+                checkColumnClicked(column)
+            }
+        })
+
 
 
         table.rowHeight = 50

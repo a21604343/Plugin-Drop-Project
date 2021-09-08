@@ -22,6 +22,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.tfc.ulht.Globals
+import com.tfc.ulht.QuickSort
 import com.tfc.ulht.loginComponents.Authentication
 import data.Assignment
 import data.Submission
@@ -49,6 +50,7 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
     private val selectAssignmentButton: Int = 6
     private var subsTotal : String = "0"
     private var subsGroups: String = "0"
+    lateinit private var imagem1 : ImageIcon
 
 
     init {
@@ -106,7 +108,11 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             data[iterator][4] = testRequestForUpdateNumSubmissions(assignment.id,"2")
             data[iterator][5] = assignment.html
             subsTotal = assignment.numSubmissions.toString()
-            data[iterator][7] = assignment.active.toString()
+            if(assignment.active){
+                data[iterator][7] = "yes"
+            }else{
+                data[iterator][7] = "no"
+            }
         }
 
 
@@ -144,10 +150,10 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         }
         //var imageOne = ImageIcon("https://tenor.com/view/down-arrow-symbols-joypixels-arrow-down-cardinal-gif-17524105")
 
-        var imageOne = ImageIcon("C:\\Users\\Diogo Casaca\\Pictures\\down-arrow-symbols.gif")
+        imagem1 = ImageIcon("C:\\Users\\Diogo Casaca\\Pictures\\down-arrow-symbols.gif")
         println()
 
-        SetIcon(table,0,imageOne,"")
+        SetIcon(table,0,imagem1,"")
 
 
 
@@ -159,9 +165,15 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
                 0 -> {
                     frame.isVisible = false
                     Globals.listAssignments.reverse()
-                   // AssignmentProfessorTableColumn(Globals.listAssignments)
+                   AssignmentProfessorTableColumn(Globals.listAssignments)
                 }
-                2 -> print("tamos ai")
+                4 -> {
+                    frame.isVisible = false
+                    var sortedAssi = QuickSort()
+                    var listaFinal = sortedAssi.sortDataAssi(assignmentList as MutableList<Assignment>,0,assignmentList.size.minus(1))
+                    AssignmentProfessorTableColumn(listaFinal)
+                }
+
                 else -> "Erro"
             }
         }
@@ -200,14 +212,14 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
          */
         table.columnModel.getColumn(infoButton).cellRenderer =
             AssignmentProfessorTableButtonRenderer("Show")
-        table.columnModel.getColumn(infoButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Assignment Details", frame)
+        table.columnModel.getColumn(infoButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Details", frame)
 
         /**
          * Select assignment for upload
          */
         table.columnModel.getColumn(selectAssignmentButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Select assignment")
-        table.columnModel.getColumn(selectAssignmentButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Select assignment", frame)
+            AssignmentProfessorTableButtonRenderer("Select")
+        table.columnModel.getColumn(selectAssignmentButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Select", frame)
 
         val scrollPane = JScrollPane(table)
         scrollPane.preferredSize = Dimension(1200, 400)

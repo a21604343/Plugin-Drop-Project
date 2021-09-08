@@ -104,6 +104,7 @@ class ListAssignment : AnAction() {
 
             if(Globals.user_type == 0){
                 val request = Request.Builder()
+                    //.url(REQUEST_URL_STUDENT)
                     .url(REQUEST_URL)
                     .build()
                 Authentication.httpClient.newCall(request).execute().use { response ->
