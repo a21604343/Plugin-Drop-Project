@@ -318,17 +318,12 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
         fun checkColumnClicked(column : Int){
             when(column){
                 0 -> {
-
                     frame.isVisible = false
                     var sortedID2 = QuickSort()
                     var listaTemp = sortedID2.sortDataID(submissionListP as MutableList<Submission>,0,submissionListP.size.minus(1))
                     SubmissionProfessorTableColumn(listaTemp, assignmentID)
-
-
-
                 }
                 3 -> {
-
                     frame.isVisible = false
                 inversePerNumSubmissions()
                 var sortedList = QuickSort()
@@ -349,10 +344,6 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                             SubmissionProfessorTableColumn(unitListByGroup(lista),assignmentID)
                         }
                     }
-
-
-
-
                 }
                 else -> "Erro"
             }

@@ -76,7 +76,12 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             if (typeReturn.equals("2")){
                 return submissionList.size.toString()
             }else{
-                return submissionList.get(submissionList.size-1).submissionDate.toString()
+                if(submissionList.size != 0){
+                    return submissionList.get(submissionList.size-1).submissionDate.toString()
+                }else{
+                    return "No submissions Yet"
+                }
+
             }
 
 
@@ -164,8 +169,20 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             when(column){
                 0 -> {
                     frame.isVisible = false
-                    Globals.listAssignments.reverse()
-                   AssignmentProfessorTableColumn(Globals.listAssignments)
+                    var sortedIdAssignment = QuickSort()
+                    var sortedIdAssi = sortedIdAssignment.sortDataString(assignmentList as MutableList<Assignment>,0,assignmentList.size-1)
+                   AssignmentProfessorTableColumn(sortedIdAssi)
+                }
+                1 -> {
+                    var arrayTeste = mutableListOf<Assignment>()
+                    arrayTeste.add(assignmentList.get(0))
+                    arrayTeste.add(assignmentList.get(1))
+                    frame.isVisible = false
+                    var sortedNameAssignment = QuickSort()
+                    var sortedNameAssi = sortedNameAssignment.sortDataNameAssi(assignmentList as MutableList<Assignment>,0,assignmentList.size-1)
+                    //var sortedNameAssi = sortedNameAssignment.sortDataNameAssi(arrayTeste,0,arrayTeste.size-1)
+                    AssignmentProfessorTableColumn(sortedNameAssi)
+
                 }
                 4 -> {
                     frame.isVisible = false
