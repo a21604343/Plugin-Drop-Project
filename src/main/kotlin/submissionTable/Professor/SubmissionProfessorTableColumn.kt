@@ -246,11 +246,11 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                 if (submission != null) {
                     data[iterator][5] = submission.status
                 }
-                var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                var summaryTemp = getTimeElapsedFromSummary(submission?.studentTests.toString())
                 if(summaryTemp.size > 1){
-                    data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
+                    data[iterator][6] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(0)
 
-                    data[iterator][9] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                    data[iterator][9] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(1)
                     println("STRUCTUREERROS : " + submission?.structureErrors)
                 }else{
                     data[iterator][6] = submission?.structureErrors.toString()

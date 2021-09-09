@@ -102,7 +102,7 @@ class QuickSort {
         val pivot: Int = numSubs[high].numSubmissions.toInt()
         var i = low - 1 // index of smaller element
         for (j in low until high) {
-            if (numSubs[j].numSubmissions.toInt() < pivot) {
+            if (numSubs[j].numSubmissions.toInt() > pivot) {
                 i++
                 val temp: Assignment = numSubs[i]
                 numSubs[i] = numSubs[j]
@@ -380,6 +380,8 @@ class QuickSort {
         }
         return array
     }
+
+
 
 
 

@@ -6,6 +6,7 @@ import com.tfc.ulht.Globals
 import com.tfc.ulht.download.FileDownloader
 import com.tfc.ulht.download.FileWriter
 import com.tfc.ulht.loginComponents.Authentication
+import data.Submission
 
 import javax.swing.*
 
@@ -101,19 +102,67 @@ internal class SubmissionHistoryTableButtonEditor(
                 JOptionPane.showMessageDialog(null, "Submission ID: $submissionId was marked as Final").toString()
             }
             else if (column == reportPosition+2) { // Download
+
+
                 //Tratar Download Submissão
-                    JOptionPane.showMessageDialog(null, "Preparing to download submission ID: ${this.submissionId}").toString()
+                JOptionPane.showMessageDialog(null, "Preparing to download submission ID: ${this.submissionId}")
+                    .toString()
                 Globals.submissionSelectedToDownload = submissionId
                 //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
                 /*Globals.choosenColumn = column
                 Globals.choosenRow = row*/
 
-                downloadSubmissao()
+                downloadSubmissao(Globals.submissionSelectedToDownload)
                 var f = FastOpener.adjust(File(baseFolder))
-                if(f != null){
+                if (f != null) {
                     ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
+
+
                 }
             }
+            /*
+                if(Globals.listaToDownload.size != 0){
+                    for (id in Globals.listaToDownload){
+                        downloadSubmissao(id)
+                        var f = FastOpener.adjust(File(baseFolder))
+                        if(f != null){
+                            ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
+                        }
+                    }
+                }else{
+                    //Tratar Download Submissão
+                    JOptionPane.showMessageDialog(null, "Preparing to download submission ID: ${this.submissionId}").toString()
+                    Globals.submissionSelectedToDownload = submissionId
+                    //frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
+                    /*Globals.choosenColumn = column
+                    Globals.choosenRow = row*/
+
+                    downloadSubmissao(Globals.submissionSelectedToDownload)
+                    var f = FastOpener.adjust(File(baseFolder))
+                    if(f != null){
+                        ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
+                    }
+                }
+
+
+
+
+            else if (column == reportPosition+3){
+
+                if (Globals.listaToDownload.isEmpty()){
+                    Globals.listaToDownload.add(submissionId)
+                    JOptionPane.showMessageDialog(null, "Selected to download submission ID: ${this.submissionId}").toString()
+                }else{
+                    if (Globals.listaToDownload.contains(submissionId)){
+                        Globals.listaToDownload.remove(submissionId)
+                        JOptionPane.showMessageDialog(null, "Removed from selected to download submission ID: ${this.submissionId}").toString()
+                    }else{
+                        Globals.listaToDownload.add(submissionId)
+                        JOptionPane.showMessageDialog(null, "Selected to download submission ID: ${this.submissionId}").toString()
+
+                    }
+                }
+            }*/
         }
         clicked = false
         if(column == reportPosition){
@@ -122,9 +171,12 @@ internal class SubmissionHistoryTableButtonEditor(
         return label
     }
 
-    fun downloadSubmissao() {
+    fun downloadSubmissao(IDToDownload : String) {
         try {
-            val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + Globals.submissionSelectedToDownload
+
+            val urlToAutenticate = "http://localhost:8080/downloadMavenProject/" + IDToDownload
+           // val urlToAutenticate = "http://localhost:8080/downloadOriginalProject/" + IDToDownload
+
             var filename = "DownloadedSubmissionID_" + Globals.submissionSelectedToDownload + "_"
             //baseFolder = "C:\\Users\\Diogo Casaca\\testeSubTFC\\unzipTESTE" + rand(0,1000)
             //tempFileName = "C:\\Users\\Diogo Casaca\\testeSubTFC\\filename" + rand(0,1000) + ".zip"

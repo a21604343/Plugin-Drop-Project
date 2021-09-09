@@ -33,10 +33,10 @@ import javax.swing.*
 class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmentID : String, assingmentTestsType : String) : JFrame() {
 
     //private var data = Array(submissionListP!!.size) { Array(10) { "" } }
-    private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","Time","Report","Mark as Final","Download Submission")
+    private var headers = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","Time","Report","Mark as Final","Download Submission")//,"select to download"
     private var headersWithStudentTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","StudentTests","Time","Report","Mark as Final","Download Submission")
     private var headersWithHiddenTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","HiddenTests","Time","Report","Mark as Final","Download Submission")
-    private var headersWithStudentAndHiddenTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","StudentTests","HiddenTests","Time","Report","Mark as Final","Download Submission")
+    private var headersWithStudentAndHiddenTests = arrayOf("ID Submission", "Submission Date","Status","Final","TeacherTests","StudentTests","HiddenTests","Time","Report","Mark as Final","Download Submission")//,"select"
     private val panel = JPanel(BorderLayout())
     private val frame = JFrame("Submissions History")
     private val assignemntID = assignmentID
@@ -44,6 +44,8 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
     private var markAsFinal: Int = 7
     private var download: Int = 8
     private var acceptStudentTests = false
+    private var listSubmissions = submissionListP
+    // private var selectTOdownload = 9
 
     private var idGroupSubmissionOpen: String = "0"
 
@@ -65,15 +67,18 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
 
 
 
+
+
+
     init {
         lateinit var table : JTable
 
         when( assingmentTestsType){
             "0" -> {
-                var data = Array(submissionListP!!.size) { Array(9) { "" } }
+                var data = Array(submissionListP!!.size) { Array(9) { "" } } // alterar para 10 caso multiplos downloads
                 table = object : JTable(data, headers) {
                     override fun isCellEditable(row: Int, col: Int): Boolean {
-                        return col in 6..8
+                        return col in 6..8 // alterar para 9
                     }
                 }
                 var iterator = 0
@@ -155,10 +160,11 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                 reportSub = 8
                 markAsFinal= 9
                 download = 10
-                var data = Array(submissionListP!!.size) { Array(11) { "" } }
+                //selectTOdownload = 11 // efeitos teste multiplos downloads
+                var data = Array(submissionListP!!.size) { Array(11) { "" } } // alterar para 12
                 table = object : JTable(data, headersWithStudentAndHiddenTests) {
                     override fun isCellEditable(row: Int, col: Int): Boolean {
-                        return col in 8..10
+                        return col in 8..10 // alterar para 11 caso multiplos downloads
                     }
                 }
                 var iterator = 0
@@ -174,10 +180,10 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                         println("sTUDENT TESTS : " + submission.studentTests.toString())
                         println("hidden TESTS : " + submission.hiddenTests.toString())
 
-                        var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
+                        var summaryTemp = getTimeElapsedFromSummary(submission?.studentTests.toString())
                         if(summaryTemp.size > 1){
-                            data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
-                            data[iterator][7] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
+                            data[iterator][4] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(0)
+                            data[iterator][7] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(1)
                         }else{
                             data[iterator][4] = submission?.structureErrors.toString()
                             data[iterator][7] = ""
@@ -260,7 +266,8 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                         SubmissionHistoryTableColumn(listTemp, assignmentID,assingmentTestsType)
                     }
                 }
-                2 -> print("tamos ai")
+                7 -> "frame.isVisible = false"
+
                 else -> "Erro"
             }
         }
@@ -312,6 +319,14 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
             SubmissionHistoryTableButtonRenderer("Download")
         table.columnModel.getColumn(download).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Download", frame,assingmentTestsType)
 
+        /**
+         * Select
+
+
+        table.columnModel.getColumn(selectTOdownload).cellRenderer =
+            SubmissionHistoryTableButtonRenderer("Select to Download")
+        table.columnModel.getColumn(selectTOdownload).cellEditor = SubmissionHistoryTableButtonEditor(JTextField(), "Select to Download", frame,assingmentTestsType)
+        */
 
         val scrollPane = JScrollPane(table)
         scrollPane.preferredSize = Dimension(1500, 400)

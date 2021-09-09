@@ -132,6 +132,7 @@ class ListAssignment : AnAction() {
     private fun showAssingmentTable() {
         // TODO: Create submissions dialog
         if(Globals.user_type == 0){
+            Globals.sortedNumSub = "0"
             AssignmentProfessorTableColumn(assignmentList)
         }else{
             AssignmentTableColumn(assignmentList)

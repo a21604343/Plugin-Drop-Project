@@ -18,6 +18,7 @@
 
 package assignmentTable.Professor
 
+import assignmentTable.SubmissionProfessorTableColumn
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -51,6 +52,7 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
     private var subsTotal : String = "0"
     private var subsGroups: String = "0"
     lateinit private var imagem1 : ImageIcon
+    private var listAssignments = assignmentList
 
 
     init {
@@ -67,11 +69,8 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             val request = Request.Builder()
                 .url("$REQUEST_URL/$assiID")
                 .build()
-
             Authentication.httpClient.newCall(request).execute().use { response ->
                 submissionList = submissionJsonAdapter.fromJson(response.body()!!.source())!!
-
-
             }
             if (typeReturn.equals("2")){
                 return submissionList.size.toString()
@@ -81,9 +80,16 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
                 }else{
                     return "No submissions Yet"
                 }
-
             }
+        }
 
+        fun updateValuesNoOnlyInScreen(id : String, numSub : Int, dataLast : String){
+            for(assi in listAssignments){
+                if (assi.id == id){
+                    assi.numSubmissions = numSub
+                    assi.lastSubmissionDate = dataLast
+                }
+            }
 
         }
 
@@ -93,24 +99,15 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
             data[iterator][1] = assignment.name
             val idString : String = assignment.id
             data[iterator][2] = testRequestForUpdateNumSubmissions(assignment.id,"1")
-            /*
-            if(Globals.hashSubmissionsByAssignment.get(idString)?.size == 0){
-                data[iterator][2] = "No Submissions Yet"
-            }else{
-                var size = Globals.hashSubmissionsByAssignment.get(idString)?.size
-                if (size != null) {
 
-                    data[iterator][2] = Globals.hashSubmissionsByAssignment.get(idString)?.get(size-1)?.submissionDate.toString()
-                }
-            }
-
-             */
             var numberSubsByGroup = Globals.hashSubmissionsByAssignment.get(assignment.id)?.size
             if(numberSubsByGroup == null){
                 numberSubsByGroup = 0
             }
-            //data[iterator][4] = numberSubsByGroup.toString()
+
             data[iterator][4] = testRequestForUpdateNumSubmissions(assignment.id,"2")
+            updateValuesNoOnlyInScreen(assignment.id,data[iterator][4].toInt(),data[iterator][2])
+
             data[iterator][5] = assignment.html
             subsTotal = assignment.numSubmissions.toString()
             if(assignment.active){
@@ -149,19 +146,33 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
         }
 
         fun SetIcon( table : JTable,  col_index : Int,  icon : ImageIcon, name : String){
-            table.tableHeader.columnModel.getColumn(col_index).headerRenderer
+            table.columnModel.getColumn(col_index).headerRenderer
             (iconRenderer());
             table.columnModel.getColumn(col_index).headerValue = txtIcon(name, icon);
         }
         //var imageOne = ImageIcon("https://tenor.com/view/down-arrow-symbols-joypixels-arrow-down-cardinal-gif-17524105")
 
-        imagem1 = ImageIcon("C:\\Users\\Diogo Casaca\\Pictures\\down-arrow-symbols.gif")
-        println()
+        imagem1 = ImageIcon("https://i.pinimg.com/originals/34/aa/59/34aa5962eec459cbdba7b76fde4f1faa.png")
+        //imagem1 = ImageIcon("C:\\Users\\Diogo Casaca\\Pictures\\down-arrow-symbols.gif")
+        //println("imagemTest: " + imagem1.image)
 
-        SetIcon(table,0,imagem1,"")
+        //SetIcon(table,3,imagem1,"")
 
 
-
+            fun sortByActive() : List<Assignment>{
+                var listTemp = mutableListOf<Assignment>()
+                for (assiActive in assignmentList){
+                    if (!assiActive.active){
+                        listTemp.add(assiActive)
+                    }
+                }
+                for (assiNactive in assignmentList){
+                    if (assiNactive.active){
+                        listTemp.add(assiNactive)
+                    }
+                }
+                return listTemp
+            }
 
 
 
@@ -188,7 +199,30 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
                     frame.isVisible = false
                     var sortedAssi = QuickSort()
                     var listaFinal = sortedAssi.sortDataAssi(assignmentList as MutableList<Assignment>,0,assignmentList.size.minus(1))
-                    AssignmentProfessorTableColumn(listaFinal)
+                    when(Globals.sortedNumSub){
+                        "1" -> {
+                            listaFinal.reverse()
+                            Globals.sortedNumSub = "2"
+                            AssignmentProfessorTableColumn(listaFinal)
+                        }
+                        "0" -> {
+                            Globals.sortedNumSub = "1"
+                            AssignmentProfessorTableColumn(listaFinal)
+                        }
+                        "2" -> {
+                            Globals.sortedNumSub = "1"
+                            AssignmentProfessorTableColumn(listaFinal)
+                        }
+                    }
+
+
+
+
+
+                }
+                7 -> {
+                    frame.isVisible = false
+                    AssignmentProfessorTableColumn(sortByActive())
                 }
 
                 else -> "Erro"
@@ -220,7 +254,7 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
          * Show list of submissionsGroup
          */
         table.columnModel.getColumn(listSubmissionsButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Show")
+            AssignmentProfessorTableButtonRenderer("Show",imagem1)
             table.columnModel.getColumn(listSubmissionsButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Submissions By Group", frame)
 
 
@@ -228,14 +262,14 @@ class AssignmentProfessorTableColumn(assignmentList: List<Assignment>) : JFrame(
          * Open more info
          */
         table.columnModel.getColumn(infoButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Show")
+            AssignmentProfessorTableButtonRenderer("Show",imagem1)
         table.columnModel.getColumn(infoButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Details", frame)
 
         /**
          * Select assignment for upload
          */
         table.columnModel.getColumn(selectAssignmentButton).cellRenderer =
-            AssignmentProfessorTableButtonRenderer("Select")
+            AssignmentProfessorTableButtonRenderer("Select",imagem1)
         table.columnModel.getColumn(selectAssignmentButton).cellEditor = AssignmentProfessorTableButtonEditor(JTextField(), "Select", frame)
 
         val scrollPane = JScrollPane(table)

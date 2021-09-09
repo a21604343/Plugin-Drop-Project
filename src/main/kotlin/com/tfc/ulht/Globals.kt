@@ -55,6 +55,9 @@ class Globals {
         var hashSubByGroupId : HashMap<String,MutableList<Submission>> = hashMapOf() // chave GroupID
         var hashAssiSub : HashMap<Assignment,List<Submission>> = HashMap()
         var sortedOnce : String = "0" // 0 = initial mode / 1 = Decrescente / 2 = Crescente
+        var sortedNumSub = "0"
+
+        var listaToDownload = mutableListOf<String>()
     }
 
 }

@@ -24,9 +24,13 @@ import java.awt.Component
 import javax.swing.JButton
 import javax.swing.JTable
 import javax.swing.table.TableCellRenderer
+import assignmentTable.Professor.AssignmentProfessorTableColumn
+import org.omg.CORBA.Object
+import java.util.*
+import javax.swing.ImageIcon
 
 
-class AssignmentProfessorTableButtonRenderer(private val labelName: String) : JButton(), TableCellRenderer {
+class AssignmentProfessorTableButtonRenderer(private val labelName: String,private val imagem : ImageIcon) : JButton(), TableCellRenderer {
 
     init {
         isOpaque = true
@@ -53,6 +57,9 @@ class AssignmentProfessorTableButtonRenderer(private val labelName: String) : JB
         }
 
         text = labelName
+        //icon = imagem
         return this
     }
 }
+
+
