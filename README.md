@@ -1,15 +1,12 @@
 <img width="200px" height="200px" align="right" src="src/main/resources/images/plugin_dp_logo.png" alt="Plugin Drop Project for IntelliJ"/>
 
-# Drop Project Plugin
+# Drop Project Plugin v2
 
-[![Build Status](https://travis-ci.com/yashjahit-21705201/Plugin-Drop-Project.svg?branch=master)](https://travis-ci.com/yashjahit-21705201/Plugin-Drop-Project)
-
-This plugin is made by a student to another and future students
+This plugin is made by a total of two students to another students and future students
  who use the Drop Project website for submissions to help automate
  the process of submitting the projects on the system.
- The plugin is designed to hep students submit their projects on the platform
- without needing to create a zip as this will be automatically
- automated by the plugin.
+ The plugin is designed to help teachers see and analize the submission made by students, when they can download and automatically open the submission downloaded in another window of IntelliJ. They can also see the report of the students submissions, and check their participation. This Plugin can also help student submit their projects on the platform
+ without needing to create a zip as this will be automated by the plugin.
  
  ## Requirements
  
@@ -21,7 +18,7 @@ This plugin is made by a student to another and future students
  
  In order to use this project, clone the project in any directory you want using the command
  
- <code>git clone https://github.com/yashjahit-21705201/Plugin-Drop-Project.git</code>
+ <code>git clone https://github.com/a21604343/Plugin-Drop-Project</code>
  
  Then browse to the folder where the project is cloned and run the following command on the root folder
  
