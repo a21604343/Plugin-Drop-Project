@@ -246,14 +246,19 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                 if (submission != null) {
                     data[iterator][5] = submission.status
                 }
-                var summaryTemp = getTimeElapsedFromSummary(submission?.studentTests.toString())
+                var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
                 if(summaryTemp.size > 1){
-                    data[iterator][6] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(0)
+                    data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
 
                     data[iterator][9] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(1)
                     println("STRUCTUREERROS : " + submission?.structureErrors)
                 }else{
-                    data[iterator][6] = submission?.structureErrors.toString()
+                    if(submission?.teacherTests == null){
+                        data[iterator][6] = "Project not ready to be tested"
+                    }else{
+                        data[iterator][6] = submission?.structureErrors.toString()
+                    }
+
                     data[iterator][9] = ""
                 }
                     if(submission?.studentTests == null){
@@ -261,7 +266,12 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                     }else{
                         data[iterator][7] = submission.studentTests.toString()
                     }
-                data[iterator][8] = submission?.hiddenTests.toString()
+                    if(submission?.hiddenTests == null){
+                        data[iterator][8] = "Project not ready to be tested"
+                    }else{
+                        data[iterator][8] = submission?.hiddenTests.toString()
+                    }
+
 
                 data[iterator][10] = submission?.report.toString()
 
@@ -301,8 +311,11 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                         data[iterator][6] = submission?.structureErrors.toString()
                         data[iterator][8] = ""
                     }
-
-                        data[iterator][7] = submission?.hiddenTests.toString()
+                        if(submission?.hiddenTests == null){
+                            data[iterator][7] = "Project not ready to be tested"
+                        }else{
+                            data[iterator][7] = submission?.hiddenTests.toString()
+                        }
 
 
 

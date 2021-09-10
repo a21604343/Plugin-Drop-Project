@@ -185,7 +185,11 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][4] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(0)
                             data[iterator][7] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(1)
                         }else{
-                            data[iterator][4] = submission?.structureErrors.toString()
+                            if(submission?.teacherTests == null){
+                                data[iterator][4] = "Project not ready to be tested"
+                            }else{
+                                data[iterator][4] = submission?.structureErrors.toString()
+                            }
                             data[iterator][7] = ""
                         }
                         if(submission.studentTests == null){
@@ -194,7 +198,12 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][5] = submission.studentTests.toString()
                         }
 
-                        data[iterator][6] = submission.hiddenTests.toString()
+                        if(submission?.hiddenTests== null){
+                            data[iterator][6] = "Project not ready to be tested"
+                        }else{
+                            data[iterator][6] = submission?.hiddenTests.toString()
+                        }
+
                         data[iterator][8] = submission.report.toString()
                         if (submission.coverage == null){
                             submission.coverage = 0
