@@ -1,6 +1,6 @@
 <img width="200px" height="200px" align="right" src="src/main/resources/images/plugin_dp_logo.png" alt="Plugin Drop Project for IntelliJ"/>
 
-# Drop Project Plugin
+# Drop Project Plugin v2
 
 This plugin is made by a total of two students to another students and future students
  who use the Drop Project website for submissions to help automate
