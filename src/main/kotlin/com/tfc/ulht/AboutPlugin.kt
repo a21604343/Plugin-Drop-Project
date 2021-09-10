@@ -17,9 +17,15 @@ class AboutPlugin : DumbAware, AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
 
-        val text = "This plugin is designed to help students submit their project\n" +
-                "on the Drop Project platform without needing to create a zip.\n\n\n" +
-                "Plugin made by: Yash Jahit - https://github.com/yashjahit-21705201/Plugin-Drop-Project"
+        val text = "This plugin is made by a total of two students to another students and future students who" +
+                "use the Drop Project website for submissions to help automate the process of submitting" +
+               " the projects on the system. The plugin is designed to help teachers see and analize the submission" +
+                "made by students, when they can download and automatically open the submission downloaded in another" +
+                "window of IntelliJ. They can also see the report of the students submissions, and check their" +
+                "participation. This Plugin can also help student submit their projects on the platform without" +
+                "needing to create a zip as this will be automated by the plugin.\n\n\n" +
+                "Plugin made by: Yash Jahit (v1) - https://github.com/yashjahit-21705201/Plugin-Drop-Project\n" +
+                              "  Diogo Casaca (v2) - https://github.com/a21604343/Plugin-Drop-Project"
 
         JOptionPane.showMessageDialog(
             null,
@@ -32,7 +38,7 @@ class AboutPlugin : DumbAware, AnAction() {
     }
 
     fun openURI() {
-        val githubLink = "https://github.com/yashjahit-21705201/Plugin-Drop-Project"
+        val githubLink = "https://github.com/a21604343/Plugin-Drop-Project"
         val url = URI(githubLink)
         try {
             val desktop = java.awt.Desktop.getDesktop()
