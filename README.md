@@ -7,6 +7,7 @@ This plugin is made by a total of two students to another students and future st
  the process of submitting the projects on the system.
  The plugin is designed to help teachers see and analize the submission made by students, when they can download and automatically open the submission downloaded in another window of IntelliJ. They can also see the report of the students submissions, and check their participation. This Plugin can also help student submit their projects on the platform
  without needing to create a zip as this will be automated by the plugin.
+ Link Video -> https://www.youtube.com/watch?v=H4LnWGq982Q
  
  ## Requirements
  
