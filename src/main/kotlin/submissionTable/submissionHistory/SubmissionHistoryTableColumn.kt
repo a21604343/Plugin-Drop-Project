@@ -104,7 +104,7 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
                             data[iterator][5] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
                         }else{
-                            if (submission?.structureErrors == null){
+                            if (submission?.structureErrors == "null"){
                                 data[iterator][4] = "Compilation Errors"
                             }else{
                                 data[iterator][4] = submission?.structureErrors.toString()
@@ -151,7 +151,7 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
                             data[iterator][5] = submission?.studentTests.toString()
                         }else{
-                            if (submission?.structureErrors == null){
+                            if (submission?.structureErrors == "null"){
                                 data[iterator][4] = "Compilation Errors"
                                 data[iterator][5] = "Compilation Errors"
                             }else{
@@ -201,12 +201,8 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][6] = submission?.hiddenTests.toString()
 
                         }else{
-                            var temp : Long = 89
-                            if(submission?.submissionId == temp){
-                                submission?.structureErrors = null
-                            }
 
-                            if(submission?.structureErrors == null){
+                            if(submission?.structureErrors == "null"){
                                 data[iterator][4] = "Compilation Errors"
                                 data[iterator][5] = "Compilation Errors"
                                 data[iterator][6] = "Compilation Errors"
@@ -257,7 +253,7 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][5] = submission.hiddenTests.toString()
                         }else{
 
-                            if(submission?.structureErrors == null) {
+                            if(submission?.structureErrors == "null") {
                                 data[iterator][4] = "Compilation Errors"
                                 data[iterator][5] = "Compilation Errors"
                             }else{

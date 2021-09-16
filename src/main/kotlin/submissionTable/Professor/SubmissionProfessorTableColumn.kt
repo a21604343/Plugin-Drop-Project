@@ -167,7 +167,7 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                         data[iterator][7] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
 
                     } else {
-                        if (submission?.structureErrors == null){
+                        if (submission?.structureErrors == "null"){
                             data[iterator][6] = "Compilation Errors"
                         }else{
                             data[iterator][6] = submission?.structureErrors.toString()
@@ -213,7 +213,7 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                     data[iterator][7] = submission?.studentTests.toString()
 
                 }else{
-                    if(submission?.structureErrors == null) {
+                    if(submission?.structureErrors == "null") {
                         data[iterator][6] = "Compilation Errors"
                         data[iterator][7] = "Compilation Errors"
                     }else{
@@ -260,7 +260,7 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                     println("STRUCTUREERROS : " + submission?.structureErrors)
                 }else {
 
-                    if (submission?.structureErrors == null) {
+                    if (submission?.structureErrors == "null") {
                         data[iterator][6] = "Compilation Errors"
                         data[iterator][7] = "Compilation Errors"
                         data[iterator][8] = "Compilation Errors"
@@ -309,7 +309,7 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
 
                     }else{
 
-                        if (submission?.structureErrors == null){
+                        if (submission?.structureErrors == "null"){
                             data[iterator][6] = "Compilation Errors"
                             data[iterator][7] = "Compilation Errors"
                         }else{
