@@ -165,9 +165,14 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                     if (summaryTemp.size > 1) {
                         data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
                         data[iterator][7] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                        println("STRUCTUREERROS : " + submission?.structureErrors)
+
                     } else {
-                        data[iterator][6] = submission?.structureErrors.toString()
+                        if (submission?.structureErrors == null){
+                            data[iterator][6] = "Compilation Errors"
+                        }else{
+                            data[iterator][6] = submission?.structureErrors.toString()
+                        }
+
                         data[iterator][7] = ""
                     }
 
@@ -205,22 +210,21 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                     data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
 
                     data[iterator][8] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                    println("STRUCTUREERROS : " + submission?.structureErrors)
+                    data[iterator][7] = submission?.studentTests.toString()
+
                 }else{
-                    data[iterator][6] = submission?.structureErrors.toString()
+                    if(submission?.structureErrors == null) {
+                        data[iterator][6] = "Compilation Errors"
+                        data[iterator][7] = "Compilation Errors"
+                    }else{
+                        data[iterator][6] = submission?.structureErrors.toString()
+                        data[iterator][7] = submission?.structureErrors.toString()
+                    }
+
                     data[iterator][8] = ""
                 }
-                 if(submission?.studentTests == null){
-                     data[iterator][7] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
-                 }else{
-                     data[iterator][7] = submission?.studentTests.toString()
-                 }
-
-
                 data[iterator][9] = submission?.report.toString()
 
-                // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
-                println("ELAPSED TIME : " + submission?.elapsed)
                 iterator++
             }
             }
@@ -251,34 +255,29 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                     data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
 
                     data[iterator][9] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(1)
+                    data[iterator][7] = submission?.studentTests.toString()
+                    data[iterator][8] = submission?.hiddenTests.toString()
                     println("STRUCTUREERROS : " + submission?.structureErrors)
-                }else{
-                    if(submission?.teacherTests == null){
-                        data[iterator][6] = "Project not ready to be tested"
-                    }else{
+                }else {
+
+                    if (submission?.structureErrors == null) {
+                        data[iterator][6] = "Compilation Errors"
+                        data[iterator][7] = "Compilation Errors"
+                        data[iterator][8] = "Compilation Errors"
+                    } else {
                         data[iterator][6] = submission?.structureErrors.toString()
+                        data[iterator][7] = submission?.structureErrors.toString()
+                        data[iterator][8] = submission?.structureErrors.toString()
                     }
 
                     data[iterator][9] = ""
                 }
-                    if(submission?.studentTests == null){
-                        data[iterator][7] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
-                    }else{
-                        data[iterator][7] = submission.studentTests.toString()
-                    }
-                    if(submission?.hiddenTests == null){
-                        data[iterator][8] = "Project not ready to be tested"
-                    }else{
-                        data[iterator][8] = submission?.hiddenTests.toString()
-                    }
-
 
                 data[iterator][10] = submission?.report.toString()
 
-                // Arranjar solução para mostar numero de subs por grupo, problema: atualiza a coluna toda de uma só vez
 
-                iterator++
-            }}
+
+                iterator++ }}
             "3" -> {
                 colEditable = arrayOf(2,9,10)
                 var data = Array(submissionListP.size) { Array(11) { "" } }
@@ -306,18 +305,20 @@ class SubmissionProfessorTableColumn(submissionListP: List<Submission?>, assignm
                         data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
 
                         data[iterator][8] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                        println("STRUCTUREERROS : " + submission?.structureErrors)
+                        data[iterator][7] = submission?.hiddenTests.toString()
+
                     }else{
-                        data[iterator][6] = submission?.structureErrors.toString()
-                        data[iterator][8] = ""
-                    }
-                        if(submission?.hiddenTests == null){
-                            data[iterator][7] = "Project not ready to be tested"
+
+                        if (submission?.structureErrors == null){
+                            data[iterator][6] = "Compilation Errors"
+                            data[iterator][7] = "Compilation Errors"
                         }else{
-                            data[iterator][7] = submission?.hiddenTests.toString()
+                            data[iterator][6] = submission?.structureErrors.toString()
+                            data[iterator][7] = submission?.structureErrors.toString()
                         }
 
-
+                        data[iterator][8] = ""
+                    }
 
                     data[iterator][9] = submission?.report.toString()
 

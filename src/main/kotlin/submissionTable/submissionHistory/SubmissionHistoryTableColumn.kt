@@ -88,7 +88,12 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                         data[iterator][0] = submission.submissionId.toString()
                         data[iterator][1] = submission.submissionDate.toString()
                         data[iterator][2] = submission.status.toString()
-                        data[iterator][3] = submission.markedAsFinal.toString()
+                        if(submission.markedAsFinal){
+                            data[iterator][3] = "yes"
+                        }else{
+                            data[iterator][3] = "no"
+                        }
+
 
                         println("TEACHER TESTS : " + submission.teacherTests.toString())
                         println("sTUDENT TESTS : " + submission.studentTests.toString())
@@ -99,7 +104,12 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                             data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
                             data[iterator][5] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
                         }else{
-                            data[iterator][4] = submission?.structureErrors.toString()
+                            if (submission?.structureErrors == null){
+                                data[iterator][4] = "Compilation Errors"
+                            }else{
+                                data[iterator][4] = submission?.structureErrors.toString()
+                            }
+
                             data[iterator][5] = ""
                         }
                         data[iterator][6] = submission.report.toString()
@@ -128,24 +138,27 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                         data[iterator][0] = submission.submissionId.toString()
                         data[iterator][1] = submission.submissionDate.toString()
                         data[iterator][2] = submission.status.toString()
-                        data[iterator][3] = submission.markedAsFinal.toString()
+                        if(submission.markedAsFinal){
+                            data[iterator][3] = "yes"
+                        }else{
+                            data[iterator][3] = "no"
+                        }
 
-                        println("TEACHER TESTS : " + submission.teacherTests.toString())
-                        println("sTUDENT TESTS : " + submission.studentTests.toString())
-                        println("hidden TESTS : " + submission.hiddenTests.toString())
 
                         var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
                         if(summaryTemp.size > 1){
                             data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
                             data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                        }else{
-                            data[iterator][4] = submission?.structureErrors.toString()
-                            data[iterator][6] = ""
-                        }
-                        if(submission?.studentTests == null){
-                            data[iterator][5] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
-                        }else{
                             data[iterator][5] = submission?.studentTests.toString()
+                        }else{
+                            if (submission?.structureErrors == null){
+                                data[iterator][4] = "Compilation Errors"
+                                data[iterator][5] = "Compilation Errors"
+                            }else{
+                                data[iterator][4] = submission?.structureErrors.toString()
+                            }
+
+                            data[iterator][6] = ""
                         }
                         data[iterator][7] = submission.report.toString()
                         if (submission.coverage == null){
@@ -174,36 +187,37 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                         data[iterator][0] = submission.submissionId.toString()
                         data[iterator][1] = submission.submissionDate.toString()
                         data[iterator][2] = submission.status.toString()
-                        data[iterator][3] = submission.markedAsFinal.toString()
-
-                        println("TEACHER TESTS : " + submission.teacherTests.toString())
-                        println("sTUDENT TESTS : " + submission.studentTests.toString())
-                        println("hidden TESTS : " + submission.hiddenTests.toString())
+                        if(submission.markedAsFinal){
+                            data[iterator][3] = "yes"
+                        }else{
+                            data[iterator][3] = "no"
+                        }
 
                         var summaryTemp = getTimeElapsedFromSummary(submission?.studentTests.toString())
                         if(summaryTemp.size > 1){
-                            data[iterator][4] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(0)
+                            data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
                             data[iterator][7] = getTimeElapsedFromSummary(submission?.studentTests.toString()).get(1)
+                            data[iterator][5] = submission?.studentTests.toString()
+                            data[iterator][6] = submission?.hiddenTests.toString()
+
                         }else{
-                            if(submission?.teacherTests == null){
-                                data[iterator][4] = "Project not ready to be tested"
+                            var temp : Long = 89
+                            if(submission?.submissionId == temp){
+                                submission?.structureErrors = null
+                            }
+
+                            if(submission?.structureErrors == null){
+                                data[iterator][4] = "Compilation Errors"
+                                data[iterator][5] = "Compilation Errors"
+                                data[iterator][6] = "Compilation Errors"
                             }else{
                                 data[iterator][4] = submission?.structureErrors.toString()
+                                data[iterator][5] = submission?.structureErrors.toString()
+                                data[iterator][6] = submission?.structureErrors.toString()
                             }
                             data[iterator][7] = ""
-                        }
-                        if(submission.studentTests == null){
-                            data[iterator][5] = "The submission doesn't include unit tests. Minimum of " + getMinStudentTests() + "tests."
-                        }else{
-                            data[iterator][5] = submission.studentTests.toString()
-                        }
 
-                        if(submission?.hiddenTests== null){
-                            data[iterator][6] = "Project not ready to be tested"
-                        }else{
-                            data[iterator][6] = submission?.hiddenTests.toString()
                         }
-
                         data[iterator][8] = submission.report.toString()
                         if (submission.coverage == null){
                             submission.coverage = 0
@@ -230,23 +244,30 @@ class SubmissionHistoryTableColumn(submissionListP: List<Submission>?, assignmen
                         data[iterator][0] = submission.submissionId.toString()
                         data[iterator][1] = submission.submissionDate.toString()
                         data[iterator][2] = submission.status.toString()
-                        data[iterator][3] = submission.markedAsFinal.toString()
-
-                        println("TEACHER TESTS : " + submission.teacherTests.toString())
-                        println("sTUDENT TESTS : " + submission.studentTests.toString())
-                        println("hidden TESTS : " + submission.hiddenTests.toString())
+                        if(submission.markedAsFinal){
+                            data[iterator][3] = "yes"
+                        }else{
+                            data[iterator][3] = "no"
+                        }
 
                         var summaryTemp = getTimeElapsedFromSummary(submission?.teacherTests.toString())
                         if(summaryTemp.size > 1){
                             data[iterator][4] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(0)
                             data[iterator][6] = getTimeElapsedFromSummary(submission?.teacherTests.toString()).get(1)
-                        }else{
-                            data[iterator][4] = submission?.structureErrors.toString()
-                            data[iterator][6] = ""
-                        }
-
                             data[iterator][5] = submission.hiddenTests.toString()
+                        }else{
 
+                            if(submission?.structureErrors == null) {
+                                data[iterator][4] = "Compilation Errors"
+                                data[iterator][5] = "Compilation Errors"
+                            }else{
+                                data[iterator][4] = submission?.structureErrors.toString()
+                                data[iterator][5] = submission?.structureErrors.toString()
+
+                            }
+                            data[iterator][6] = ""
+
+                        }
                         data[iterator][7] = submission.report.toString()
                         if (submission.coverage == null){
                             submission.coverage = 0

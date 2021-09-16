@@ -36,7 +36,7 @@ data class Submission(
     var report: String?,
     val summary: String?,
     val status : String,
-    val structureErrors: String?,
+    var structureErrors: String?,
 
     val teacherTests: String?,
     val hiddenTests: String?,
